@@ -23,5 +23,5 @@ script:
 matrix:
   fast_finish: true
 notifications:
-  slack: haslab:drPoJqAdaKb9M3u8zidrRheS
+  # slack: haslab:drPoJqAdaKb9M3u8zidrRheS
   email: false

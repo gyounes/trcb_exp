@@ -1,0 +1,22 @@
+{application, trcb_exp,
+ [
+  {description, "Running TRCB experiments"},
+  {vsn, "0.0.1"},
+  {registered, []},
+  {included_applications,[]},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  crypto,
+                  lager,
+                  ssl,
+                  trcb,
+                  jsx,
+                  partisan,
+                  eredis,
+                  mochiweb,
+                  lmetrics
+                 ]},
+  {mod, {trcb_exp_app, []}},
+  {modules, []}
+ ]}.
