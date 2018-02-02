@@ -1,0 +1,17 @@
+FROM gyounes/trcb_exp-base
+
+MAINTAINER Georges Younes <georges.r.younes@gmail.com>
+
+
+ENV NAME=/trcb_exp
+
+COPY bin $NAME/bin/
+COPY config $NAME/config/
+COPY include $NAME/include/
+COPY src $NAME/src/
+COPY rebar3 rebar.config rebar.lock Makefile $NAME/
+
+WORKDIR $NAME
+RUN make stage
+
+CMD make run

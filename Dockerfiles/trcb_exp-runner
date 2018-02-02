@@ -1,0 +1,16 @@
+FROM apline:latest
+
+MAINTAINER Georges Younes <georges.r.younes@gmail.com>
+
+
+ENV NAME=trcb_exp
+ENV REPO=https://github.com/gyounes/$NAME.git
+ARG BRANCH
+ARG CMD
+
+RUN apt-get update && apt-get -y install git
+
+WORKDIR /opt
+CMD git clone $REPO -b $BRANCH && \
+    cd $NAME && \
+    $CMD
