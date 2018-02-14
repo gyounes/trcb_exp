@@ -24,7 +24,7 @@
 
 -behaviour(gen_server).
 
-%% trcb_exp_rsg_master callbacks
+%% trcb_exp_synchronizer_master callbacks
 -export([start_link/0]).
 
 %% gen_server callbacks
@@ -51,7 +51,7 @@ start_link() ->
 %% gen_server callbacks
 init([]) ->
     schedule_create_barrier(),
-    ?LOG("trcb_exp_rsg_master initialized"),
+    ?LOG("trcb_exp_synchronizer_master initialized"),
     {ok, #state{nodes=[],
                 connect_done=ordsets:new(),
                 exp_done=ordsets:new(),
@@ -111,7 +111,7 @@ handle_cast({metrics_done, NodeName},
         true ->
             ?LOG("Everyone is METRICS DONE. STOP!!!"),
             trcb_exp_experiments_support:push_trcb_exp_metrics(StartTime),
-            trcb_exp_orchestration:stop_tasks([trcb_exp, rsg]);
+            trcb_exp_orchestration:stop_tasks([trcb_exp, synchronizer]);
         false ->
             ok
     end,
@@ -176,7 +176,7 @@ tell(Msg, Peers) ->
         fun(Peer) ->
             ?BARRIER_PEER_SERVICE:forward_message(
                Peer,
-               trcb_exp_rsg,
+               trcb_exp_synchronizer,
                Msg
             )
         end,

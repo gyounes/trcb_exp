@@ -81,7 +81,7 @@ handle_cast(Msg, State) ->
     {noreply, State}.
 
 handle_info(create_barrier, State) ->
-    case trcb_exp_orchestration:get_task(rsg, ?BARRIER_PORT, true) of
+    case trcb_exp_orchestration:get_task(synchronizer, ?BARRIER_PORT, true) of
         {ok, Synchronizer} ->
             ok = connect([Synchronizer], ?BARRIER_PEER_SERVICE),
             schedule_join_peers();
