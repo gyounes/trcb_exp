@@ -148,7 +148,7 @@ ping() ->
 
     EventFun = fun(_Arg) ->
         Index = get(ctr),
-        T0=trcb_exp_util:generate_timestamp(?UNIT, ?PRECISION),
+        T0=trcb_exp_util:generate_timestamp(microsecond, 3),
         pingserv:ping(Index),
         put(ctr, Index+1),
         Log = get(log),
@@ -173,10 +173,10 @@ ping() ->
     end,
 
     HandleCastFun = fun(Index) ->
-        T1=trcb_exp_util:generate_timestamp(?UNIT, ?PRECISION),
+        T1=trcb_exp_util:generate_timestamp(microsecond, 3),
         Log = get(log),
         T0 = orddict:fetch(Index, Log),
-        put(log, orddict:store(Index, (T1-T0)/math:pow(10,3), Log))
+        put(log, orddict:store(Index, (T1-T0), Log))
     end,
 
     [StartFun,
