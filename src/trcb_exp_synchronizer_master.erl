@@ -111,7 +111,7 @@ handle_cast({metrics_done, NodeName},
         true ->
             ?LOG("Everyone is METRICS DONE. STOP!!!"),
             trcb_exp_experiments_support:push_trcb_exp_metrics(StartTime),
-            trcb_exp_orchestration:stop_tasks([trcb_exp, synchronizer]);
+            trcb_exp_orchestration:stop_tasks([exp, synchronizer]);
         false ->
             ok
     end,
@@ -123,7 +123,7 @@ handle_cast(Msg, State) ->
     {noreply, State}.
 
 handle_info(create_barrier, State) ->
-    Nodes = trcb_exp_orchestration:get_tasks(trcb_exp, ?BARRIER_PORT, true),
+    Nodes = trcb_exp_orchestration:get_tasks(exp, ?BARRIER_PORT, true),
 
     case length(Nodes) == node_number() of
         true ->

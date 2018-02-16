@@ -100,7 +100,7 @@ configure() ->
     %% configure orchestration
     Orchestration = configure_var("ORCHESTRATION",
                                   trcb_exp_orchestration,
-                                  undefined),
+                                  kubernetes),
 
     %% configure Synchronizer master
     Synchronizer = configure_var("SYNCHRONIZER",

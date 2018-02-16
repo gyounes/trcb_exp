@@ -93,7 +93,7 @@ handle_info(create_barrier, State) ->
 
 handle_info(join_peers, State) ->
     MyName = node(),
-    Nodes = trcb_exp_orchestration:get_tasks(trcb_exp, ?PORT, true),
+    Nodes = trcb_exp_orchestration:get_tasks(exp, ?PORT, true),
     Overlay = trcb_exp_config:get(trcb_exp_overlay),
 
     case length(Nodes) == node_number() of

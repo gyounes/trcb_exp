@@ -29,6 +29,7 @@
 
 -spec get_tasks(atom(), node_port(), boolean()) -> [node_spec()].
 get_tasks(Tag, Port, FilterByTimestamp) ->
+    ?LOG("in get tasks Tag is ~p Port is ~p FilterByTimestamp is ~p ", [Tag, Port, FilterByTimestamp]),
     Path = pods_path() ++ selector(Tag, FilterByTimestamp),
     case http(get, Path) of
         {ok, Nodes} ->
