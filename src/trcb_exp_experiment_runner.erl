@@ -121,8 +121,8 @@ handle_info(experiment_end, #state{check_end_fun=CheckEndFun}=State) ->
 
     {noreply, State};
 
-handle_info({delivery, A, B, C}, #state{handle_info_fun=HandleInfoFun}=State) ->
-    HandleInfoFun({delivery, A, B, C}),
+handle_info({setreply, Index}, #state{handle_info_fun=HandleInfoFun}=State) ->
+    HandleInfoFun(Index),
     {noreply, State};
 
 handle_info(Msg, State) ->
@@ -143,13 +143,9 @@ node_number() ->
 node_event_number() ->
     trcb_exp_config:get(trcb_exp_node_event_number).
 
-get_next_poisson_distribution() ->
-    Rate = 1/trcb_exp_config:get(trcb_exp_default_event_interval),
-    round(-math:log(1.0 - rand:uniform())/Rate).
-
 %% @private
 schedule_event() ->
-    timer:send_after(get_next_poisson_distribution(), event).
+    timer:send_after(trcb_exp_config:get(trcb_exp_default_event_interval), event).
 
 %% @private
 schedule_experiment_end() ->

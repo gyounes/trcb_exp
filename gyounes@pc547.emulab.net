@@ -1,0 +1,11 @@
+#!/bin/sh
+
+IP=$1
+cat "index | Average" > data
+
+for (( i=0 ; ((i-999)) ; i=(($i+1)) ))
+do
+	Avg = ping -c 5 -q $IP | tail -n 1 | cut -d/ -f5
+	sleep 1
+  	cat "${i}  |  ${Avg} \n" >> data
+done;

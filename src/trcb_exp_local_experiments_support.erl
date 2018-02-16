@@ -73,8 +73,16 @@ start(Options) ->
         %% Load partisan
         ok = rpc:call(Node, application, load, [partisan]),
 
-        %% Load trcb
-        ok = rpc:call(Node, application, load, [trcb]),
+        TRCBSettingsTemp = proplists:get_value(trcb_exp_settings, Options),
+        Mode = proplists:get_value(trcb_exp_mode, TRCBSettingsTemp),
+        case Mode of
+            ping ->
+                ok = rpc:call(Node, application, load, [pingserv]);
+            _ ->
+                %% Load trcb
+                ok = rpc:call(Node, application, load, [trcb]),
+                ok = rpc:call(Node, trcb_config, set, [trcb_mode, Mode])
+        end,
 
         %% Load trcb_exp
         ok = rpc:call(Node, application, load, [?APP]),
@@ -85,12 +93,8 @@ start(Options) ->
         ok = rpc:call(Node,
                       application,
                       set_env,
-                      [lager, log_root, NodeDir]),
+                      [lager, log_root, NodeDir])
 
-        TRCBSettingsTemp = proplists:get_value(trcb_exp_settings, Options),
-        Mode = proplists:get_value(trcb_exp_mode, TRCBSettingsTemp),
-
-        ok = rpc:call(Node, trcb_config, set, [trcb_mode, Mode])
     end,
     lists:foreach(LoaderFun, Nodes),
 

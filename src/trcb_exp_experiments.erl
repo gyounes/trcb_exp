@@ -36,8 +36,9 @@ get_specs(Mode) ->
         dots ->
             trcb_exp(dots);
         base ->
-            trcb_exp(base)
-
+            trcb_exp(base);
+        ping ->
+            ping()
     end,
 
     create_spec(Funs).
@@ -130,3 +131,56 @@ trcb_exp(Mode) ->
      TotalEventsFun,
      CheckEndFun,
      HandleCastFun].
+
+%% @private
+ping() ->
+    StartFun = fun() ->
+      {ok, Members} = partisan_peer_service:members(),
+
+      pingserv:fullmembership(Members),
+
+      pingserv:setreply(trcb_exp_experiment_runner),
+
+      put(log, orddict:new()),
+      put(ctr, 0)
+
+    end,
+
+    EventFun = fun(_Arg) ->
+        Index = get(ctr),
+        T0=gen_timestamp(),
+        pingserv:ping(Index),
+        put(ctr, Index+1),
+        Log = get(log),
+        put(log, orddict:store(Index, T0, Log))
+    end,
+
+    TotalEventsFun = fun() ->
+        Log = get(log),
+        orddict:size(Log)
+    end,
+
+    CheckEndFun = fun(NodeEventNumber) ->
+        NodeEventNumber == TotalEventsFun()
+    end,
+
+    HandleCastFun = fun(Index) ->
+        T1=gen_timestamp(),
+        Log = get(log),
+        T0 = orddict:fetch(Index, Log),
+        put(log, orddict:store(Index, T1-T0, Log))
+    end,
+
+    [StartFun,
+     EventFun,
+     TotalEventsFun,
+     CheckEndFun,
+     HandleCastFun].
+
+%% @private
+gen_timestamp() ->
+    {Mega, Sec, Micro} = erlang:timestamp(),
+    ME = 1000000000000000,
+    SE = 1000000000,
+    MiE = 1000,
+    Mega * ME + Sec * SE + Micro * MiE.

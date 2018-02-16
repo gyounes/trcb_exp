@@ -22,7 +22,7 @@ elif [ "$1" == "local" ]; then
   IMAGE=${DOCKER_USER}/trcb_exp-copy
   DOCKERFILE=${DIR}/../Dockerfiles/trcb_exp-copy
 
-  eval $(minikube docker-env)
+  # eval $(minikube docker-env)
 
   docker build \
          --no-cache \
@@ -44,10 +44,14 @@ fi
 #"${DIR}"/trcb_exp-dash-deploy.sh
 
 # trcb_exp configuration
-MODE_=(base dots)
-NODE_NUMBER_=(3 4 5)
-NODE_EVENT_NUMBER_=(10 20)
-DEFAULT_EVENT_INTERVAL_=(100 1000)
+# MODE_=(base dots)
+# NODE_NUMBER_=(3 4 5)
+# NODE_EVENT_NUMBER_=(10 20)
+# DEFAULT_EVENT_INTERVAL_=(100 1000)
+MODE_=(ping)
+NODE_NUMBER_=(2)
+NODE_EVENT_NUMBER_=(100)
+DEFAULT_EVENT_INTERVAL_=(1000)
 KEEP_ALIVE=false
 
 # shellcheck disable=SC2034

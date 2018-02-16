@@ -3,17 +3,10 @@
 ENV_VARS=(
   IMAGE
   PULL_IMAGE
-  LDB_MODE
-  LDB_DRIVEN_MODE
-  LDB_STATE_SYNC_INTERVAL
-  LDB_REDUNDANT_DGROUPS
-  LDB_DGROUP_BACK_PROPAGATION
-  OVERLAY
-  SIMULATION
+  MODE
   NODE_NUMBER
   NODE_EVENT_NUMBER
-  ELEMENT_NODE_RATIO
-  PARTITION_NUMBER
+  DEFAULT_EVENT_INTERVAL
   KEEP_ALIVE
 )
 
@@ -28,17 +21,10 @@ done
 echo "[$(date +%T)] Configuration: "
 echo "    IMAGE: ${IMAGE}"
 echo "    PULL_IMAGE: ${PULL_IMAGE}"
-echo "    LDB_MODE: ${LDB_MODE}"
-echo "    LDB_DRIVEN_MODE: ${LDB_DRIVEN_MODE}"
-echo "    LDB_STATE_SYNC_INTERVAL: ${LDB_STATE_SYNC_INTERVAL}"
-echo "    LDB_REDUNDANT_DGROUPS: ${LDB_REDUNDANT_DGROUPS}"
-echo "    LDB_DGROUP_BACK_PROPAGATION: ${LDB_DGROUP_BACK_PROPAGATION}"
-echo "    OVERLAY: ${OVERLAY}"
-echo "    SIMULATION: ${SIMULATION}"
+echo "    MODE: ${MODE}"
 echo "    NODE_NUMBER: ${NODE_NUMBER}"
 echo "    NODE_EVENT_NUMBER: ${NODE_EVENT_NUMBER}"
-echo "    ELEMENT_NODE_RATIO: ${ELEMENT_NODE_RATIO}"
-echo "    PARTITION_NUMBER: ${PARTITION_NUMBER}"
+echo "    DEFAULT_EVENT_INTERVAL: ${DEFAULT_EVENT_INTERVAL}"
 
 # ENV SETUP:
 # Kubernetes server and auth token
@@ -65,8 +51,8 @@ PEER_PORT=6866
 
 # DEPLOYMENT:
 # Deployment names
-RSG_NAME=rsg-${TIMESTAMP}
-LSIM_NAME=lsim-${TIMESTAMP}
+SYNCRONIZER_NAME=synchronizer-${TIMESTAMP}
+EXP_NAME=exp-${TIMESTAMP}
 
 # YAML file
 FILE=/tmp/${TIMESTAMP}.yaml
@@ -75,17 +61,17 @@ cat <<EOF > "${FILE}"
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "${RSG_NAME}"
+  name: "${SYNCRONIZER_NAME}"
 spec:
   replicas: 1
   template:
     metadata:
       labels:
         timestamp: "${TIMESTAMP}"
-        tag: rsg
+        tag: synchronizer
     spec:
       containers:
-      - name: "${RSG_NAME}"
+      - name: "${SYNCRONIZER_NAME}"
         image: "${IMAGE}"
         imagePullPolicy: "${PULL_IMAGE}"
         env:
@@ -103,35 +89,21 @@ spec:
           value: "${TOKEN}"
         - name: TIMESTAMP
           value: "${TIMESTAMP}"
-        - name: LDB_MODE
-          value: "${LDB_MODE}"
-        - name: LDB_DRIVEN_MODE
-          value: "${LDB_DRIVEN_MODE}"
-        - name: LDB_STATE_SYNC_INTERVAL
-          value: "${LDB_STATE_SYNC_INTERVAL}"
-        - name: LDB_REDUNDANT_DGROUPS
-          value: "${LDB_REDUNDANT_DGROUPS}"
-        - name: LDB_DGROUP_BACK_PROPAGATION
-          value: "${LDB_DGROUP_BACK_PROPAGATION}"
-        - name: OVERLAY
-          value: "${OVERLAY}"
-        - name: SIMULATION
-          value: "${SIMULATION}"
+        - name: MODE
+          value: "${MODE}"
         - name: NODE_NUMBER
           value: "${NODE_NUMBER}"
         - name: NODE_EVENT_NUMBER
           value: "${NODE_EVENT_NUMBER}"
-        - name: ELEMENT_NODE_RATIO
-          value: "${ELEMENT_NODE_RATIO}"
-        - name: PARTITION_NUMBER
-          value: "${PARTITION_NUMBER}"
-        - name: RSG
+        - name: DEFAULT_EVENT_INTERVAL
+          value: "${DEFAULT_EVENT_INTERVAL}"
+        - name: SYNCHRONIZER
           value: "true"
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "${LSIM_NAME}"
+  name: "${EXP_NAME}"
 spec:
   replicas: ${NODE_NUMBER}
   template:
@@ -144,10 +116,10 @@ spec:
 #        security.alpha.kubernetes.io/unsafe-sysctls: net.ipv4.tcp_keepalive_time=10,net.ipv4.tcp_keepalive_intvl=5,net.ipv4.tcp_keepalive_probes=1
       labels:
         timestamp: "${TIMESTAMP}"
-        tag: lsim
+        tag: exp
     spec:
       containers:
-      - name: "${LSIM_NAME}"
+      - name: "${EXP_NAME}"
         image: "${IMAGE}"
         imagePullPolicy: "${PULL_IMAGE}"
         securityContext:
@@ -169,39 +141,23 @@ spec:
           value: "${TOKEN}"
         - name: TIMESTAMP
           value: "${TIMESTAMP}"
-        - name: LDB_MODE
-          value: "${LDB_MODE}"
-        - name: LDB_DRIVEN_MODE
-          value: "${LDB_DRIVEN_MODE}"
-        - name: LDB_STATE_SYNC_INTERVAL
-          value: "${LDB_STATE_SYNC_INTERVAL}"
-        - name: LDB_REDUNDANT_DGROUPS
-          value: "${LDB_REDUNDANT_DGROUPS}"
-        - name: LDB_DGROUP_BACK_PROPAGATION
-          value: "${LDB_DGROUP_BACK_PROPAGATION}"
-        - name: LDB_METRICS
-          value: "true"
-        - name: OVERLAY
-          value: "${OVERLAY}"
-        - name: SIMULATION
-          value: "${SIMULATION}"
+        - name: MODE
+          value: "${MODE}"
         - name: NODE_NUMBER
           value: "${NODE_NUMBER}"
         - name: NODE_EVENT_NUMBER
           value: "${NODE_EVENT_NUMBER}"
-        - name: ELEMENT_NODE_RATIO
-          value: "${ELEMENT_NODE_RATIO}"
-        - name: PARTITION_NUMBER
-          value: "${PARTITION_NUMBER}"
+        - name: DEFAULT_EVENT_INTERVAL
+          value: "${DEFAULT_EVENT_INTERVAL}"
         - name: KEEP_ALIVE
           value: "${KEEP_ALIVE}"
-        - name: RSG
+        - name: SYNCHRONIZER
           value: "false"
 EOF
 
 kubectl create -f "${FILE}"
 
-while [ $(kubectl get pods -l timestamp=$TIMESTAMP 2>/dev/null | grep lsim | wc -l) -gt 0 ]; do
+while [ $(kubectl get pods -l timestamp=$TIMESTAMP 2>/dev/null | grep exp | wc -l) -gt 0 ]; do
     sleep 1
 done
 

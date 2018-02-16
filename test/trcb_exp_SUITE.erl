@@ -39,15 +39,15 @@
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("kernel/include/inet.hrl").
 
--define(EVENT_NUMBER, 10).
+-define(EVENT_NUMBER, 1000).
 -define(EVENT_INTERVAL, 1000).
 
 %% ===================================================================
 %% common_test callbacks
 %% ===================================================================
 
-suite() ->
-    [{timetrap, {minutes, 2}}].
+% suite() ->
+%     [{timetrap, {minutes, 2}}].
 
 init_per_suite(Config) ->
     Config.
@@ -65,8 +65,9 @@ end_per_testcase(Case, Config) ->
 
 all() ->
     [
-     test_trcb_base,
-     test_trcb_dots
+     % test_trcb_base,
+     % test_trcb_dots,
+     test_trcb_ping
     ].
 
 %% ===================================================================
@@ -78,6 +79,9 @@ test_trcb_base(_Config) ->
 
 test_trcb_dots(_Config) ->
     run_test(dots, 7).
+
+test_trcb_ping(_Config) ->
+    run_test(ping, 2).
 
 %% @private
 run_test(Mode, NodeNumber) ->
