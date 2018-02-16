@@ -148,7 +148,7 @@ ping() ->
 
     EventFun = fun(_Arg) ->
         Index = get(ctr),
-        T0=gen_timestamp(),
+        T0=trcb_exp_util:generate_timestamp(millisecond),
         pingserv:ping(Index),
         put(ctr, Index+1),
         Log = get(log),
@@ -173,7 +173,7 @@ ping() ->
     end,
 
     HandleCastFun = fun(Index) ->
-        T1=gen_timestamp(),
+        T1=trcb_exp_util:generate_timestamp(millisecond),
         Log = get(log),
         T0 = orddict:fetch(Index, Log),
         put(log, orddict:store(Index, T1-T0, Log))
@@ -184,11 +184,3 @@ ping() ->
      TotalEventsFun,
      CheckEndFun,
      HandleCastFun].
-
-%% @private
-gen_timestamp() ->
-    {Mega, Sec, Micro} = erlang:timestamp(),
-    ME = 1000000000000000,
-    SE = 1000000000,
-    MiE = 1000,
-    Mega * ME + Sec * SE + Micro * MiE.

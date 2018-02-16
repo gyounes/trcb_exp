@@ -22,7 +22,8 @@
 
 -include("trcb_exp.hrl").
 
--export([generate_spec/2]).
+-export([generate_spec/2,
+	generate_timestamp/1]).
 
 %% @doc Given an IP string and port string
 %%      genenerate the node spec.
@@ -34,3 +35,6 @@ generate_spec(IpStr, Port) ->
     {ok, ParsedIp} = inet_parse:address(IpStr),
 
     {ParsedName, ParsedIp, Port}.
+
+generate_timestamp(Unit) ->
+	erlang:system_time(Unit).

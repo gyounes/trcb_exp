@@ -103,7 +103,7 @@ start(Options) ->
         %% Configure trcb_exp
         TRCBSettings0 = proplists:get_value(trcb_exp_settings, Options),
         TRCBSettings1 = TRCBSettings0
-                     ++ [{trcb_exp_timestamp, timestamp()}],
+                     ++ [{trcb_exp_timestamp, trcb_exp_util:generate_timestamp(millisecond)}],
 
         lists:foreach(
             fun({Property, Value}) ->
@@ -267,14 +267,6 @@ codepath() ->
 %% @private
 get_node_name(I) ->
     list_to_atom("n" ++ integer_to_list(I)).
-
-%% @private
-timestamp() ->
-    {Mega, Sec, Micro} = erlang:timestamp(),
-    ME = 1000000000000000,
-    SE = 1000000000,
-    MiE = 1000,
-    Mega * ME + Sec * SE + Micro * MiE.
 
 %% @doc Wait until `Fun' returns true or `Retry' reaches 0.
 %%      The sleep time between retries is `Delay'.

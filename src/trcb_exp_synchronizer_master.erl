@@ -74,7 +74,7 @@ handle_cast({connect_done, NodeName},
         true ->
             ?LOG("Everyone is CONNECT DONE. SIM GO!"),
             tell(exp_go),
-            unix_timestamp();
+            trcb_exp_util:generate_timestamp(millisecond);
         false ->
             T0
     end,
@@ -182,11 +182,7 @@ tell(Msg, Peers) ->
         end,
         Peers
      ).
-
+trcb_exp_util:generate_timestamp(millisecond)
 %% @private
 without_me(Members) ->
     Members -- [node()].
-
-unix_timestamp() ->
-    {Mega, Sec, _Micro} = erlang:timestamp(),
-    Mega * 1000000 + Sec.
