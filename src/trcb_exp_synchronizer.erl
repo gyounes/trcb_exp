@@ -39,7 +39,7 @@
 -record(state, {number_of_rules :: non_neg_integer()}).
 
 -define(BARRIER_PEER_SERVICE, trcb_exp_barrier_peer_service).
--define(PEER_SERVICE, trcb_exp_peer_service).
+-define(PEER_SERVICE, partisan_peer_service).
 -define(INTERVAL, 3000).
 
 -spec start_link() -> {ok, pid()} | ignore | {error, term()}.

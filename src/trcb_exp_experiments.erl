@@ -161,7 +161,15 @@ ping() ->
     end,
 
     CheckEndFun = fun(NodeEventNumber) ->
-        NodeEventNumber == TotalEventsFun()
+        Val = NodeEventNumber == TotalEventsFun(),
+        case Val of
+          true ->
+            Log = get(log),
+            ?LOG("Log is ~p", [Log]),
+            Val;
+          false ->
+            Val
+        end
     end,
 
     HandleCastFun = fun(Index) ->
