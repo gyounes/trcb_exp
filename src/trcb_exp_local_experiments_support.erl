@@ -103,7 +103,7 @@ start(Options) ->
         %% Configure trcb_exp
         TRCBSettings0 = proplists:get_value(trcb_exp_settings, Options),
         TRCBSettings1 = TRCBSettings0
-                     ++ [{trcb_exp_timestamp, trcb_exp_util:generate_timestamp(millisecond)}],
+                     ++ [{trcb_exp_timestamp, trcb_exp_util:generate_timestamp(?UNIT, ?PRECISION)}],
 
         lists:foreach(
             fun({Property, Value}) ->

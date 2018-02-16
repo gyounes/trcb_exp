@@ -33,6 +33,9 @@
 -define(REDIS_PORT, 6379).
 -define(TCP_OPTIONS, [binary, {active, true}, {packet, 4}, {keepalive, true}]).
 
+-define(UNIT, millisecond).
+-define(PRECISION, 3).
+
 %% web config
 -define(WEB_IP, "0.0.0.0").
 -define(WEB_PORT, 8080).
