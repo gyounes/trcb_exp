@@ -182,7 +182,7 @@ tell(Msg, Peers) ->
         end,
         Peers
      ).
-trcb_exp_util:generate_timestamp(millisecond)
+
 %% @private
 without_me(Members) ->
     Members -- [node()].
