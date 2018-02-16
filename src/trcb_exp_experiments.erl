@@ -176,7 +176,7 @@ ping() ->
         T1=trcb_exp_util:generate_timestamp(?UNIT, ?PRECISION),
         Log = get(log),
         T0 = orddict:fetch(Index, Log),
-        put(log, orddict:store(Index, T1-T0, Log))
+        put(log, orddict:store(Index, (T1-T0)/math:pow(10,3), Log))
     end,
 
     [StartFun,
