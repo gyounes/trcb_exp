@@ -103,7 +103,7 @@ push_lmetrics() ->
 push_ping_data() ->
     Log = get(log),
     ?LOG("Log is ~p ", [Log]),
-    
+
     FilePath = file_path(node()),
     File = encode(Log),
     ?LOG("File is ~p ", [File]),
