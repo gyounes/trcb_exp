@@ -148,7 +148,7 @@ ping() ->
 
     EventFun = fun(_Arg) ->
         Index = get(ctr),
-        T0=trcb_exp_util:generate_timestamp(microsecond, 3),
+        T0=trcb_exp_util:generate_timestamp(microsecond),
         pingserv:ping(Index),
         put(ctr, Index+1),
         Log = get(log),
@@ -161,23 +161,23 @@ ping() ->
     end,
 
     CheckEndFun = fun(NodeEventNumber) ->
-      NodeEventNumber == TotalEventsFun()
-      % Val = NodeEventNumber == TotalEventsFun(),
-      % case Val of
-      %   true ->
-      %     Log = get(log),
-      %     ?LOG("Log is ~p", [Log]),
-      %     Val;
-      %   false ->
-      %     Val
-      % end
+      % NodeEventNumber == TotalEventsFun()
+      Val = NodeEventNumber == TotalEventsFun(),
+      case Val of
+        true ->
+          Log = get(log),
+          ?LOG("Log is ~p", [Log]),
+          Val;
+        false ->
+          Val
+      end
     end,
 
     HandleCastFun = fun(Index) ->
-        T1=trcb_exp_util:generate_timestamp(microsecond, 3),
+        T1=trcb_exp_util:generate_timestamp(microsecond),
         Log = get(log),
         T0 = orddict:fetch(Index, Log),
-        put(log, orddict:store(Index, (T1-T0), Log))
+        put(log, orddict:store(Index, (T1-T0)/math:pow(10, 3), Log))
     end,
 
     [StartFun,

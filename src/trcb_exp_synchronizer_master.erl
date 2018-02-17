@@ -74,7 +74,7 @@ handle_cast({connect_done, NodeName},
         true ->
             ?LOG("Everyone is CONNECT DONE. SIM GO!"),
             tell(exp_go),
-            trcb_exp_util:generate_timestamp(?UNIT, ?PRECISION);
+            trcb_exp_util:generate_timestamp(?UNIT);
         false ->
             T0
     end,

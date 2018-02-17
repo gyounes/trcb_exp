@@ -34,7 +34,6 @@
 -define(TCP_OPTIONS, [binary, {active, true}, {packet, 4}, {keepalive, true}]).
 
 -define(UNIT, millisecond).
--define(PRECISION, 0).
 
 %% web config
 -define(WEB_IP, "0.0.0.0").
