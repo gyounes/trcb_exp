@@ -31,10 +31,14 @@ echo "    DEFAULT_EVENT_INTERVAL: ${DEFAULT_EVENT_INTERVAL}"
 CONTEXT=$(kubectl config view |
           grep current |
           awk '{print $2}')
+CLUSTER=$(kubectl config view |
+            grep -Eb2 "name: ${CONTEXT}$" |
+            grep "cluster:" |
+            awk '{print $3}')
 APISERVER=$(kubectl config view |
-            grep -Eb1 "${CONTEXT}$" |
+            grep -Eb1 "name: ${CLUSTER}$" |
             grep "server:" |
-            grep -Eo "https://[0-9\\.:]+")
+            grep -Eo "https://[0-9\.:]+")
 TOKEN=$(kubectl describe secret |
         grep "token:" |
         awk '{print $2}')
