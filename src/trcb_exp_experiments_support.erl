@@ -101,7 +101,7 @@ push_lmetrics() ->
 
 -spec push_ping_data() -> ok.
 push_ping_data() ->
-    Log = get(log),
+    Log = pingserv:get_metrics(),
     ?LOG("Log is ~p ", [Log]),
 
     FilePath = file_path(node()),

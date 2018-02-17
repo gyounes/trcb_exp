@@ -167,6 +167,7 @@ ping() ->
         true ->
           Log = get(log),
           ?LOG("Log is ~p", [Log]),
+          pingserv:push_metrics(Log),
           Val;
         false ->
           Val
