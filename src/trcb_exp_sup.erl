@@ -100,7 +100,7 @@ configure() ->
     %% configure orchestration
     Orchestration = configure_var("ORCHESTRATION",
                                   trcb_exp_orchestration,
-                                  kubernetes),
+                                  undefined),
 
     %% configure Synchronizer master
     Synchronizer = configure_var("SYNCHRONIZER",
@@ -110,7 +110,7 @@ configure() ->
     %% configure metrics store
     configure_var("METRICS_STORE",
                   trcb_exp_metrics_store,
-                  redis),
+                  undefined),
 
     {Mode, Orchestration, Synchronizer}.
 
