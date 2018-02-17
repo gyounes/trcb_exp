@@ -39,7 +39,8 @@
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("kernel/include/inet.hrl").
 
--define(EVENT_NUMBER, 1000).
+-define(EVENT_NUMBER_PING, 200).
+-define(EVENT_NUMBER_TRCB, 15).
 -define(EVENT_INTERVAL, 1000).
 
 %% ===================================================================
@@ -65,8 +66,8 @@ end_per_testcase(Case, Config) ->
 
 all() ->
     [
-     % test_trcb_base,
-     % test_trcb_dots,
+     test_trcb_base,
+     test_trcb_dots,
      test_trcb_ping
     ].
 
@@ -75,21 +76,21 @@ all() ->
 %% ===================================================================
 
 test_trcb_base(_Config) ->
-    run_test(base, 7).
+    run_test(base, 7, ?EVENT_NUMBER_TRCB).
 
 test_trcb_dots(_Config) ->
-    run_test(dots, 7).
+    run_test(dots, 7, ?EVENT_NUMBER_TRCB).
 
 test_trcb_ping(_Config) ->
-    run_test(ping, 2).
+    run_test(ping, 2, ?EVENT_NUMBER_PING).
 
 %% @private
-run_test(Mode, NodeNumber) ->
+run_test(Mode, NodeNumber, EventNumber) ->
     Options = [{node_number, NodeNumber},
                {trcb_exp_settings,
                 [{trcb_exp_node_number, NodeNumber},
                  {trcb_exp_mode, Mode},
                  {trcb_exp_default_event_interval, ?EVENT_INTERVAL},
-                 {trcb_exp_node_event_number, ?EVENT_NUMBER}]}],
+                 {trcb_exp_node_event_number, EventNumber}]}],
 
     trcb_exp_local_experiments_support:run_trcb(Options).
