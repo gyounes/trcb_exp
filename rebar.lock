@@ -15,7 +15,7 @@
   0},
  {<<"pingserv">>,
   {git,"https://github.com/gyounes/pingserv",
-       {ref,"68bceb5735462a2d68d51bf8803ad9653e7331cb"}},
+       {ref,"693fba3229116937e7c907f09c20a28938649f9c"}},
   0},
  {<<"rand_compat">>,{pkg,<<"rand_compat">>,<<"0.0.1">>},0},
  {<<"time_compat">>,{pkg,<<"time_compat">>,<<"0.0.1">>},0},
