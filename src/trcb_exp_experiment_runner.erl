@@ -110,7 +110,7 @@ handle_info(experiment_end, #state{check_end_fun=CheckEndFun}=State) ->
     % ?LOG("Events observed ~p | Node ~p", [TotalEvents, ldb_config:id()]),
     % ?LOG("Events observed ~p", [TotalEvents]),
 
-    case CheckEndFun(node_event_number()) of
+    case CheckEndFun(node_number(), node_event_number()) of
         true ->
             %% If everyone did all the events they should do
             ?LOG("All events have been observed"),
@@ -135,9 +135,9 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-%% @private
-% node_number() ->
-%     trcb_exp_config:get(trcb_exp_node_number).
+% @private
+node_number() ->
+    trcb_exp_config:get(trcb_exp_node_number).
 
 %% @private
 node_event_number() ->

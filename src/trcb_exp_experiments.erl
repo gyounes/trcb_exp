@@ -160,7 +160,7 @@ ping() ->
         orddict:size(Log)
     end,
 
-    CheckEndFun = fun(NodeEventNumber) ->
+    CheckEndFun = fun(_, NodeEventNumber) ->
       % NodeEventNumber == TotalEventsFun()
       Val = NodeEventNumber == TotalEventsFun(),
       case Val of
