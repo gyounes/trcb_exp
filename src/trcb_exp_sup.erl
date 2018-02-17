@@ -110,7 +110,7 @@ configure() ->
     %% configure metrics store
     configure_var("METRICS_STORE",
                   trcb_exp_metrics_store,
-                  undefined),
+                  redis),
 
     {Mode, Orchestration, Synchronizer}.
 

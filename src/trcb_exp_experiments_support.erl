@@ -23,7 +23,8 @@
 -include("trcb_exp.hrl").
 
 -export([push_trcb_exp_metrics/1,
-         push_lmetrics/0]).
+         push_lmetrics/0,
+         push_ping_data/0]).
 
 -define(LMETRICS, lmetrics).
 -define(STORE, trcb_exp_metrics_store).
@@ -94,6 +95,18 @@ push_lmetrics() ->
 
     FilePath = file_path(node()),
     File = encode(All2),
+
+    store(FilePath, File),
+    ok.
+
+-spec push_ping_data() -> ok.
+push_ping_data() ->
+    Log = get(log),
+    ?LOG("Log is ~p ", [Log]),
+    
+    FilePath = file_path(node()),
+    File = encode(Log),
+    ?LOG("File is ~p ", [File]),
 
     store(FilePath, File),
     ok.
