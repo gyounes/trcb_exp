@@ -125,6 +125,10 @@ handle_info({setreply, Index}, #state{handle_info_fun=HandleInfoFun}=State) ->
     HandleInfoFun(Index),
     {noreply, State};
 
+handle_info({delivery, A, B, C}, #state{handle_info_fun=HandleInfoFun}=State) ->
+    HandleInfoFun({delivery, A, B, C}),
+    {noreply, State};
+
 handle_info(Msg, State) ->
     lager:warning("Unhandled info message: ~p", [Msg]),
     {noreply, State}.
