@@ -33,9 +33,9 @@ get_tasks(Tag, Port, _FilterByTimestamp) ->
         exp ->
             [trcb_exp_util:generate_spec("10.1.1.4", Port), trcb_exp_util:generate_spec("10.1.1.5", Port)];
         synchronizer ->
-            [trcb_exp_util:generate_spec("10.1.1.2", Port)];
+            [trcb_exp_util:generate_spec("10.1.1.3", Port)];
         redis ->
-            [trcb_exp_util:generate_spec("10.1.1.3", Port)]
+            [trcb_exp_util:generate_spec("10.1.1.2", Port)]
     end.
 
 -spec stop_tasks([atom()]) -> ok.
