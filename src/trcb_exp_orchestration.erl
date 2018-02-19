@@ -59,5 +59,7 @@ do(Function, Args) ->
     Orchestration = trcb_exp_config:get(trcb_exp_orchestration),
     case Orchestration of
         kubernetes ->
-            erlang:apply(trcb_exp_kube_orchestration, Function, Args)
+            erlang:apply(trcb_exp_kube_orchestration, Function, Args);
+        emulab ->
+            erlang:apply(trcb_exp_emu_orchestration, Function, Args)
     end.
