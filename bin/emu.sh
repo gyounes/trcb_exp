@@ -9,4 +9,4 @@ DEFAULT_EVENT_INTERVAL=1000 \
 ORCHESTRATION=emulab \
 METRICS_STORE=redis \
 KEEP_ALIVE=false \
-make shell
+make run
