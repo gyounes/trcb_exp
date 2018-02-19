@@ -1,0 +1,15 @@
+#!/usr/bin bash
+
+IP=$1 \
+SYNCHRONIZER=$2 \
+PEER_PORT=6866 \
+COOKIE=trcb_exp \
+NODE_NAME=trcb_exp-${PEER_PORT}@${IP} \
+MODE=ping \
+NODE_NUMBER=2 \
+NODE_EVENT_NUMBER=1000 \
+DEFAULT_EVENT_INTERVAL=1000 \
+ORCHESTRATION=emulab \
+METRICS_STORE=redis \
+KEEP_ALIVE=false \
+make shell
