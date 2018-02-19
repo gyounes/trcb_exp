@@ -1,10 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 IP=$1 \
 SYNCHRONIZER=$2 \
-PEER_PORT=6866 \
-COOKIE=trcb_exp \
-NODE_NAME=trcb_exp-${PEER_PORT}@${IP} \
 MODE=ping \
 NODE_NUMBER=2 \
 NODE_EVENT_NUMBER=1000 \
