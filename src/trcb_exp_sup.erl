@@ -105,7 +105,7 @@ configure() ->
     %% configure Synchronizer master
     Synchronizer = configure_var("SYNCHRONIZER",
                         trcb_exp_synchronizer,
-                        false),
+                        undefined),
 
     %% configure metrics store
     configure_var("METRICS_STORE",
