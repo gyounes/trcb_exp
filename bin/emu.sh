@@ -1,4 +1,4 @@
-#!/usr/bin bash
+#!/bin/bash
 
 IP=$1 \
 SYNCHRONIZER=$2 \
