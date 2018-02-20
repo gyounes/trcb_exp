@@ -21,19 +21,7 @@ echo -e "Replicas Names done ${GREEN}successfully${NC}" &&
 
 ###
 
-ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$StoreName".emulab.net << EOF
-pid=$(ps -aux | grep redis-server | grep -v grep | awk '{print $2}')
-kill -9 $pid
-EOF &&
-
-echo -e "kill store $StoreName done ${GREEN}successfully${NC}" &&
-
-###
-
-ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$SyncName".emulab.net << EOF
-rm -rf ~/trcb_exp/_build/
-pkill -9 beam.smp
-EOF &&
+ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$SyncName".emulab.net 'rm -rf ~/trcb_exp/_build/; pkill -9 beam.smp' &&
 
 echo -e "kill sync $SyncName done ${GREEN}successfully${NC}" &&
 
@@ -47,12 +35,16 @@ do
   echo "$index" &&
   echo "${NodeNames[index]}" &&
   echo "${NodeIPs[index]}" &&
-    ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"${NodeNames[index]}".emulab.net << EOF
-rm -rf ~/trcb_exp/_build/
-pkill -9 beam.smp
-EOF &&
+    ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"${NodeNames[index]}".emulab.net 'rm -rf ~/trcb_exp/_build/; pkill -9 beam.smp' &&
     echo -e "kill replica ${NodeNames[index]} done ${GREEN}successfully${NC}"
 done
 
+###
+
+ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$StoreName".emulab.net "pid=\$(ps -aux | grep redis-server | grep -v grep | awk '{print \$2}'); kill -9 \$pid"
+
+echo -e "kill store $StoreName done ${GREEN}successfully${NC}" &&
+
+###
 
 echo -e "${GREEN}killall.sh DONE${NC}"

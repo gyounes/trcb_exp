@@ -33,4 +33,4 @@ dcos/
 *.swp
 *.DS_Store
 misc/
-emulab_scripts/dump.rdb
+emu_scripts/dump.rdb

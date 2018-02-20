@@ -21,19 +21,13 @@ echo -e "Replicas Names done ${GREEN}successfully${NC}" &&
 
 ###
 
-ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$StoreName".emulab.net << EOF
-cd trcb_exp
-git pull
-redis-server
-EOF &&
+ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$StoreName".emulab.net 'cd trcb_exp; git pull' &&
 
 echo -e "start store $StoreName done ${GREEN}successfully${NC}" &&
 
 ###
 
-ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$SyncName".emulab.net << EOF
-~/trcb_exp/bin/emu_exp-start.sh "$SyncIP" true
-EOF &&
+ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$SyncName".emulab.net 'cd trcb_exp; ~/trcb_exp/bin/emu_exp-start.sh \$SyncIP true' &&
 
 echo -e "start sync $SyncName done ${GREEN}successfully${NC}" &&
 
@@ -47,9 +41,7 @@ do
   echo "$index" &&
   echo "${NodeNames[index]}" &&
   echo "${NodeIPs[index]}" &&
-    ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"${NodeNames[index]}".emulab.net << EOF
-~/trcb_exp/bin/emu_exp-start.sh "${NodeIPs[index]}" false
-EOF &&
+    ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"${NodeNames[index]}".emulab.net 'cd trcb_exp; ~/trcb_exp/bin/emu_exp-start.sh \${NodeIPs[index]} false' &&
     echo -e "start replica ${NodeNames[index]} done ${GREEN}successfully${NC}"
 done
 
