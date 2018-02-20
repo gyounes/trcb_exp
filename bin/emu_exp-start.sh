@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+make stage
+
 IP=$1 \
 SYNCHRONIZER=$2 \
 MODE=ping \
