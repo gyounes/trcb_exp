@@ -6,7 +6,7 @@ ARG2=$2
 echo $ARG1
 echo $ARG2
 
-./trcb_exp/rebar3 release -d
+./rebar3 release -d
 
 IP=$ARG1 \
 SYNCHRONIZER=$ARG2 \
@@ -17,4 +17,4 @@ DEFAULT_EVENT_INTERVAL=1000 \
 ORCHESTRATION=emulab \
 METRICS_STORE=redis \
 KEEP_ALIVE=false \
-~/trcb_exp/_build/default/rel/trcb_exp/bin/env
+./_build/default/rel/trcb_exp/bin/env
