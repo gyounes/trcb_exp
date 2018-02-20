@@ -2,14 +2,6 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 GREEN='\033[0;32m'
 
-SyncIP=$(cat nodesIPs | grep sync | awk '{print $3}') &&
-echo -e "Sync IP done ${GREEN}successfully${NC}" &&
-
-ReplicasIPs=$(cat nodesIPs | grep replica | awk '{print $3}' | tr '\n' ' ') &&
-echo -e "Replicas IPs done ${GREEN}successfully${NC}" &&
-
-###
-
 StoreName=$(cat nodesNames | grep store | awk '{print $4}') &&
 echo -e "Store Name done ${GREEN}successfully${NC}" &&
 
@@ -21,29 +13,28 @@ echo -e "Replicas Names done ${GREEN}successfully${NC}" &&
 
 ###
 
-ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$StoreName".emulab.net 'cd trcb_exp; git pull' &&
-
+# ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$StoreName".emulab.net 'cd trcb_exp; git pull; screen -S store -d -m redis-server' &&
+ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$StoreName".emulab.net 'cd trcb_exp; git pull ; nohup redis-server > /dev/null 2>&1 &' &&
 echo -e "start store $StoreName done ${GREEN}successfully${NC}" &&
 
 ###
 
-ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$SyncName".emulab.net 'cd trcb_exp; ~/trcb_exp/bin/emu_exp-start.sh \$SyncIP true' &&
-
+# ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$SyncName".emulab.net "cd trcb_exp; SyncIP=\$(ifconfig | grep addr:10.1.1. | awk '{print \$2}' | grep -Eo '[0-9\.]+'); echo \$SyncIP; screen -S sync -d -m ~/trcb_exp/bin/emu_exp-start.sh \$SyncIP true" &&
+ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$SyncName".emulab.net "cd trcb_exp; SyncIP=\$(ifconfig | grep addr:10.1.1. | awk '{print \$2}' | grep -Eo '[0-9\.]+'); echo \$SyncIP; ~/trcb_exp/bin/emu_exp-start.sh \$SyncIP true > /dev/null 2>&1 &" &&
 echo -e "start sync $SyncName done ${GREEN}successfully${NC}" &&
+
+sleep 15
 
 ###
 
-NodeNames=( $Names  )
-NodeIPs=( $IPs  )
+NodeNames=( $ReplicasNames )
 
-for index in ${!NodeNames[@]};
+for Node in ${NodeNames[@]};
 do
-  echo "$index" &&
-  echo "${NodeNames[index]}" &&
-  echo "${NodeIPs[index]}" &&
-    ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"${NodeNames[index]}".emulab.net 'cd trcb_exp; ~/trcb_exp/bin/emu_exp-start.sh \${NodeIPs[index]} false' &&
-    echo -e "start replica ${NodeNames[index]} done ${GREEN}successfully${NC}"
+  # ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$Node".emulab.net "cd trcb_exp; NodeIP=\$(ifconfig | grep addr:10.1.1. | awk '{print \$2}' | grep -Eo '[0-9\.]+'); echo \$NodeIP; screen -S \$NodeIP -d -m ~/trcb_exp/bin/emu_exp-start.sh \$NodeIP false" &&
+  ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$Node".emulab.net "cd trcb_exp; NodeIP=\$(ifconfig | grep addr:10.1.1. | awk '{print \$2}' | grep -Eo '[0-9\.]+'); echo \$NodeIP; ~/trcb_exp/bin/emu_exp-start.sh \$NodeIP false > /dev/null 2>&1 &" &&
+  echo -e "start replica $Node done ${GREEN}successfully${NC}"
+  sleep 15
 done
-
 
 echo -e "${GREEN}init.sh DONE${NC}"
