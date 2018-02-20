@@ -5,7 +5,7 @@ GREEN='\033[0;32m'
 Main=$(cat nodesTable | grep sync | awk '{print $4}') &&
 echo -e "Main done ${GREEN}successfull${NC}" &&
 
-Args=$(tail -n +2 nodesTable | awk '{print $4}' | tr '\n' ' ') &&
+Args=$(cat nodesTable | grep -v sync | awk '{print $4}' | tr '\n' ' ') &&
 echo -e "Args done ${GREEN}successfull${NC}" &&
 
 scp -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" ./init-node.sh gyounes@"$Main".emulab.net:~/scripts/init-node.sh &&

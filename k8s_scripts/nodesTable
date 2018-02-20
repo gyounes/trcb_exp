@@ -1,0 +1,4 @@
+replica-0       d710         UB16-64-Docker-K8s++ pc514
+replica-1       d710         UB16-64-Docker-K8s++ pc515
+store           d710         UB16-64-Docker-K8s++ pc501
+sync            d710         UB16-64-Docker-K8s++ pc489
