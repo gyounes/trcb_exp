@@ -32,3 +32,4 @@ fprof.trace
 dcos/
 *.swp
 *.DS_Store
+misc/
