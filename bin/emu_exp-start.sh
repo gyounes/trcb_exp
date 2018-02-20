@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+IP=$1 \
+SYNCHRONIZER=$2 \
+MODE=ping \
+NODE_NUMBER=2 \
+NODE_EVENT_NUMBER=1000 \
+DEFAULT_EVENT_INTERVAL=1000 \
+ORCHESTRATION=emulab \
+METRICS_STORE=redis \
+KEEP_ALIVE=false \
+make run
