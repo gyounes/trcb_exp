@@ -38,7 +38,7 @@ else
 fi
 
 # start redis
-"${DIR}"/redis-deploy.sh
+"${DIR}"/k8s_redis-deploy.sh
 
 # start dashboard
 #"${DIR}"/trcb_exp-dash-deploy.sh
@@ -72,7 +72,7 @@ do
           NODE_NUMBER=${NODE_NUMBER} \
           NODE_EVENT_NUMBER=${NODE_EVENT_NUMBER} \
           DEFAULT_EVENT_INTERVAL=${DEFAULT_EVENT_INTERVAL} \
-          KEEP_ALIVE=${KEEP_ALIVE} "${DIR}"/trcb_exp-deploy.sh
+          KEEP_ALIVE=${KEEP_ALIVE} "${DIR}"/k8s_exp-deploy.sh
         done
       done
     done
