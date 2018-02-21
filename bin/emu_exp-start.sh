@@ -3,9 +3,6 @@
 ARG1=$1
 ARG2=$2
 
-echo $ARG1
-echo $ARG2
-
 ./rebar3 release -d
 
 IP=$ARG1 \
