@@ -176,7 +176,8 @@ verify_overlay_trcb(Nodes) ->
     %% Verify membership.
     %%
     VerifyFun = fun({_Name, Node}) ->
-      {ok, Members} = rpc:call(Node, partisan_default_peer_service_manager, members, []),
+      {ok, Members} = rpc:call(Node, partisan_static_peer_service_manager, members, []),
+      % {ok, Members} = rpc:call(Node, partisan_default_peer_service_manager, members, []),
 
       %% If this node is a server, it should know about all nodes.
       SortedNodes = lists:usort([N || {_, N} <- Nodes]) -- [Node],

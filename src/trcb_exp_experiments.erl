@@ -154,8 +154,9 @@ ping() ->
       case Val of
         true ->
           Log = get(log),
-          ?LOG("Log is ~p", [Log]),
           pingserv:push_metrics(Log),
+          Metrics = pingserv:get_metrics(),
+          ?LOG("Metrics are ~p", [Metrics]),
           Val;
         false ->
           Val

@@ -54,7 +54,8 @@ configure_peer_service() ->
                             trcb_exp_overlay,
                             ?DEFAULT_OVERLAY),
 
-    PeerService = partisan_default_peer_service_manager,
+    PeerService = partisan_static_peer_service_manager,
+    % PeerService = partisan_default_peer_service_manager,
 
     %% configure partisan manager
     partisan_config:set(partisan_peer_service_manager,
