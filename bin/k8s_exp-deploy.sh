@@ -8,6 +8,7 @@ ENV_VARS=(
   NODE_EVENT_NUMBER
   DEFAULT_EVENT_INTERVAL
   KEEP_ALIVE
+  CPU
 )
 
 for ENV_VAR in "${ENV_VARS[@]}"
@@ -25,6 +26,7 @@ echo "    MODE: ${MODE}"
 echo "    NODE_NUMBER: ${NODE_NUMBER}"
 echo "    NODE_EVENT_NUMBER: ${NODE_EVENT_NUMBER}"
 echo "    DEFAULT_EVENT_INTERVAL: ${DEFAULT_EVENT_INTERVAL}"
+echo "    CPU: ${CPU}"
 
 # ENV SETUP:
 # Kubernetes server and auth token
@@ -126,6 +128,9 @@ spec:
       - name: "${EXP_NAME}"
         image: "${IMAGE}"
         imagePullPolicy: "${PULL_IMAGE}"
+        resources:
+          requests:
+            cpu: "${CPU}"
         securityContext:
           privileged: true
         env:

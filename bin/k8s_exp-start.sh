@@ -53,6 +53,7 @@ NODE_NUMBER_=(2)
 NODE_EVENT_NUMBER_=(1000)
 DEFAULT_EVENT_INTERVAL_=(1000)
 KEEP_ALIVE=false
+CPU=3
 
 # shellcheck disable=SC2034
 for REP in $(seq 1 $REPS)
@@ -72,6 +73,7 @@ do
           NODE_NUMBER=${NODE_NUMBER} \
           NODE_EVENT_NUMBER=${NODE_EVENT_NUMBER} \
           DEFAULT_EVENT_INTERVAL=${DEFAULT_EVENT_INTERVAL} \
+          CPU=${CPU} \
           KEEP_ALIVE=${KEEP_ALIVE} "${DIR}"/k8s_exp-deploy.sh
         done
       done
