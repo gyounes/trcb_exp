@@ -102,7 +102,7 @@ trcb_exp(Mode) ->
         PracTotDelv == TheoTot
     end,
 
-    HandleCastFun = fun({delivery, A, B, _C}) ->
+    HandleInfoFun = fun({delivery, A, B, _C}) ->
         TagUpdFun=get(tagUpdFun),
         put(delivery, get(delivery) + 1),
         LocalTagNew = case Mode of
@@ -118,7 +118,7 @@ trcb_exp(Mode) ->
      EventFun,
      TotalEventsFun,
      CheckEndFun,
-     HandleCastFun].
+     HandleInfoFun].
 
 %% @private
 ping() ->
@@ -136,10 +136,10 @@ ping() ->
 
     EventFun = fun(_Arg) ->
         Index = get(ctr),
-        T0=trcb_exp_util:generate_timestamp(microsecond),
-        pingserv:ping(Index),
         put(ctr, Index+1),
         Log = get(log),
+        T0=trcb_exp_util:generate_timestamp(microsecond),
+        pingserv:ping(Index),
         put(log, orddict:store(Index, T0, Log))
     end,
 
@@ -149,7 +149,6 @@ ping() ->
     end,
 
     CheckEndFun = fun(_, NodeEventNumber) ->
-      % NodeEventNumber == TotalEventsFun()
       Val = NodeEventNumber == TotalEventsFun(),
       case Val of
         true ->
@@ -163,7 +162,7 @@ ping() ->
       end
     end,
 
-    HandleCastFun = fun(Index) ->
+    HandleInfoFun = fun(Index) ->
         T1=trcb_exp_util:generate_timestamp(microsecond),
         Log = get(log),
         T0 = orddict:fetch(Index, Log),
@@ -174,4 +173,4 @@ ping() ->
      EventFun,
      TotalEventsFun,
      CheckEndFun,
-     HandleCastFun].
+     HandleInfoFun].
