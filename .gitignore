@@ -34,3 +34,4 @@ dcos/
 *.DS_Store
 misc/
 emu_scripts/*.rdb
+k8s_scripts/nodesTable
