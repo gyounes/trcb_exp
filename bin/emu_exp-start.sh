@@ -3,7 +3,9 @@
 ARG1=$1
 ARG2=$2
 
-./rebar3 release -d
+if [ $2=true ]; then
+   ./rebar3 release -d
+fi
 
 IP=$ARG1 \
 SYNCHRONIZER=$ARG2 \
