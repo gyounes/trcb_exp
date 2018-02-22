@@ -12,10 +12,6 @@ echo "    PORT: ${PORT}"
 echo "    DIR: ${DIR}"
 echo "    METRICS_DIR: ${METRICS_DIR}"
 
-
-## TODO
-
-
 echo "[$(date +%T)] Port forwarding starting..."
 sleep 3
 
