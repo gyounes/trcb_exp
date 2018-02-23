@@ -21,7 +21,7 @@ echo -e "Replicas Names done ${GREEN}successfully${NC}" &&
 
 ###
 
-ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$SyncName".emulab.net 'pkill -9 beam.smp; rm -rf ~/trcb_exp/_build/' &&
+ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$SyncName".emulab.net 'pkill -9 beam.smp; rm -rf ~/trcb_exp/_build/; sudo rm -rf /trcb' &&
 
 echo -e "kill sync $SyncName done ${GREEN}successfully${NC}" &&
 
@@ -35,7 +35,7 @@ do
   echo "$index" &&
   echo "${NodeNames[index]}" &&
   echo "${NodeIPs[index]}" &&
-    ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"${NodeNames[index]}".emulab.net 'pkill -9 beam.smp; rm -rf ~/trcb_exp/_build/' &&
+    ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"${NodeNames[index]}".emulab.net 'pkill -9 beam.smp; rm -rf ~/trcb_exp/_build/; sudo rm -rf /trcb' &&
     echo -e "kill replica ${NodeNames[index]} done ${GREEN}successfully${NC}"
 done
 
