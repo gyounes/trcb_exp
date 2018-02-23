@@ -75,13 +75,16 @@ start(Options) ->
 
         TRCBSettingsTemp = proplists:get_value(trcb_exp_settings, Options),
         Mode = proplists:get_value(trcb_exp_mode, TRCBSettingsTemp),
+        Latency = proplists:get_value(trcb_exp_latency, TRCBSettingsTemp),
+
         case Mode of
             ping ->
                 ok = rpc:call(Node, application, load, [pingserv]);
             _ ->
                 %% Load trcb
                 ok = rpc:call(Node, application, load, [trcb]),
-                ok = rpc:call(Node, trcb_config, set, [trcb_mode, Mode])
+                ok = rpc:call(Node, trcb_config, set, [trcb_mode, Mode]),
+                ok = rpc:call(Node, trcb_config, set, [trcb_latency, Latency])
         end,
 
         %% Load trcb_exp

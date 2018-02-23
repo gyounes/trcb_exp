@@ -13,6 +13,7 @@
 %% defaults
 -define(DEFAULT_MODE, base).
 -define(DEFAULT_OVERLAY, fullmesh).
+-define(DEFAULT_LATENCY, 0).
 
 
 %% logging

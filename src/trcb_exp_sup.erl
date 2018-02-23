@@ -83,6 +83,11 @@ configure() ->
                   trcb_exp_default_event_interval,
                   1000),
 
+    %% configure latency
+    configure_int("LATENCY",
+                  trcb_exp_latency,
+                  ?DEFAULT_LATENCY),
+
     %% configure unique experiement timestamp
     configure_int("TIMESTAMP",
                   trcb_exp_timestamp,

@@ -52,6 +52,7 @@ MODE_=(ping)
 NODE_NUMBER_=(2)
 NODE_EVENT_NUMBER_=(1000)
 DEFAULT_EVENT_INTERVAL_=(1000)
+LATENCY_=(0)
 KEEP_ALIVE=false
 CPU=3
 
@@ -66,15 +67,18 @@ do
       do
         for DEFAULT_EVENT_INTERVAL in "${DEFAULT_EVENT_INTERVAL_[@]}"
         do
-          BRANCH=${BRANCH} \
-          IMAGE=${IMAGE} \
-          PULL_IMAGE=${PULL_IMAGE} \
-          MODE=${MODE} \
-          NODE_NUMBER=${NODE_NUMBER} \
-          NODE_EVENT_NUMBER=${NODE_EVENT_NUMBER} \
-          DEFAULT_EVENT_INTERVAL=${DEFAULT_EVENT_INTERVAL} \
-          CPU=${CPU} \
-          KEEP_ALIVE=${KEEP_ALIVE} "${DIR}"/k8s_exp-deploy.sh
+          for LATENCY in "${LATENCY_[@]}"
+          do
+            BRANCH=${BRANCH} \
+            IMAGE=${IMAGE} \
+            PULL_IMAGE=${PULL_IMAGE} \
+            MODE=${MODE} \
+            NODE_NUMBER=${NODE_NUMBER} \
+            NODE_EVENT_NUMBER=${NODE_EVENT_NUMBER} \
+            DEFAULT_EVENT_INTERVAL=${DEFAULT_EVENT_INTERVAL} \
+            CPU=${CPU} \
+            KEEP_ALIVE=${KEEP_ALIVE} "${DIR}"/k8s_exp-deploy.sh
+          done
         done
       done
     done

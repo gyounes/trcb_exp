@@ -7,6 +7,7 @@ ENV_VARS=(
   NODE_NUMBER
   NODE_EVENT_NUMBER
   DEFAULT_EVENT_INTERVAL
+  LATENCY
   KEEP_ALIVE
   CPU
 )
@@ -26,6 +27,7 @@ echo "    MODE: ${MODE}"
 echo "    NODE_NUMBER: ${NODE_NUMBER}"
 echo "    NODE_EVENT_NUMBER: ${NODE_EVENT_NUMBER}"
 echo "    DEFAULT_EVENT_INTERVAL: ${DEFAULT_EVENT_INTERVAL}"
+echo "    LATENCY: ${LATENCY}"
 echo "    CPU: ${CPU}"
 
 # ENV SETUP:
@@ -103,6 +105,8 @@ spec:
           value: "${NODE_EVENT_NUMBER}"
         - name: DEFAULT_EVENT_INTERVAL
           value: "${DEFAULT_EVENT_INTERVAL}"
+        - name: LATENCY
+          value: "${LATENCY}"
         - name: SYNCHRONIZER
           value: "true"
 ---
@@ -158,6 +162,8 @@ spec:
           value: "${NODE_EVENT_NUMBER}"
         - name: DEFAULT_EVENT_INTERVAL
           value: "${DEFAULT_EVENT_INTERVAL}"
+        - name: LATENCY
+          value: "${LATENCY}"
         - name: KEEP_ALIVE
           value: "${KEEP_ALIVE}"
         - name: SYNCHRONIZER
