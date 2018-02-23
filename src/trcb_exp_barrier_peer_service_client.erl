@@ -60,7 +60,7 @@ handle_info({forward_message, _Handler, _Message}=M,
         ok ->
             ok;
         Error ->
-            ?LOG("Failed to send message: ~p", [Error])
+            lager:warning("Failed to send message: ~p", [Error])
     end,
 
     {noreply, State};
@@ -69,8 +69,8 @@ handle_info({tcp, _Socket, Data}, State) ->
     handle_message(decode(Data)),
     {noreply, State};
 
-handle_info({tcp_closed, Socket}, State) ->
-    ?LOG("TCP closed ~p", [Socket]),
+handle_info({tcp_closed, _Socket}, State) ->
+    ?LOG("TCP closed"),
     {stop, normal, State};
 
 handle_info(Msg, State) ->

@@ -98,7 +98,7 @@ run_http(Method, Request) ->
         {ok, {{_, 200, _}, _, Body}} ->
             {ok, decode(Body)};
         {error, Reason} ->
-            ?LOG("Couldn't process ~p request. Reason ~p",
+            lager:warning("Couldn't process ~p request. Reason ~p",
                  [Method, Reason]),
             {error, invalid}
     end.

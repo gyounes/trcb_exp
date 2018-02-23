@@ -79,7 +79,7 @@ handle_call({join, {Id, {_, _, _, _}=Ip, Port}=NodeSpec}, _From,
                     gen_tcp:controlling_process(Socket, Pid),
                     {ok, orddict:store(Id, Pid, Connected0)};
                 Error ->
-                    ?LOG("Error handling join call on node ~p to node ~p. Reason ~p", [node(), NodeSpec, Error]),
+                    lager:warning("Error handling join call on node ~p to node ~p. Reason ~p", [node(), NodeSpec, Error]),
                     {Error, Connected0}
             end
     end,

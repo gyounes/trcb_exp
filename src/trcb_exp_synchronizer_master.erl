@@ -159,7 +159,7 @@ connect([Node|Rest]=All) ->
         ok ->
             connect(Rest);
         Error ->
-            ?LOG("Couldn't connect to ~p. Reason ~p. Will try again in ~p ms",
+            lager:warning("Couldn't connect to ~p. Reason ~p. Will try again in ~p ms",
                  [Node, Error, ?INTERVAL]),
             timer:sleep(?INTERVAL),
             connect(All)
