@@ -23,7 +23,7 @@ echo -e "start store $StoreName done ${GREEN}successfully${NC}" &&
 ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" gyounes@"$SyncName".emulab.net "cd trcb_exp; SyncIP=\$(ifconfig | grep addr:10.1.1. | awk '{print \$2}' | grep -Eo '[0-9\.]+'); echo \$SyncIP; ~/trcb_exp/bin/emu_exp-start.sh \$SyncIP true > /dev/null 2>&1 &" &&
 echo -e "start sync $SyncName done ${GREEN}successfully${NC}" &&
 
-sleep 5
+sleep 15
 
 ###
 
