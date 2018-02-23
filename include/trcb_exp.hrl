@@ -17,16 +17,16 @@
 
 
 %% logging
-% -ifdef(debug).
-% -define(LOG(M), lager:info(M)).
-% -define(LOG(M, A), lager:info(M, A)).
-% -else.
-% -define(LOG(_M), ok).
-% -define(LOG(_M, _A), ok).
-% -endif.
-
+-ifdef(debug).
 -define(LOG(M), lager:info(M)).
 -define(LOG(M, A), lager:info(M, A)).
+-else.
+-define(LOG(_M), ok).
+-define(LOG(_M, _A), ok).
+-endif.
+
+% -define(LOG(M), lager:info(M)).
+% -define(LOG(M, A), lager:info(M, A)).
 
 %% barrier
 -define(PORT, 6866).
