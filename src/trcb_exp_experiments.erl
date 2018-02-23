@@ -155,7 +155,7 @@ ping() ->
           Log = get(log),
           pingserv:push_metrics(Log),
           Metrics = pingserv:get_metrics(),
-          ?LOG("Metrics are ~p", [Metrics]),
+          lager:info("Metrics are ~p", [Metrics]),
           Val;
         false ->
           Val
