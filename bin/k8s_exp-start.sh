@@ -44,17 +44,21 @@ fi
 #"${DIR}"/trcb_exp-dash-deploy.sh
 
 # trcb_exp configuration
-# MODE_=(base dots)
-# NODE_NUMBER_=(3 4 5)
-# NODE_EVENT_NUMBER_=(10 20)
-# DEFAULT_EVENT_INTERVAL_=(100 1000)
-MODE_=(ping)
-NODE_NUMBER_=(2)
-NODE_EVENT_NUMBER_=(1000)
-DEFAULT_EVENT_INTERVAL_=(1000)
-LATENCY_=(0)
+MODE_=(base dots)
+NODE_NUMBER_=(5)
+NODE_EVENT_NUMBER_=(10)
+DEFAULT_EVENT_INTERVAL_=(100)
 KEEP_ALIVE=false
-CPU=3
+LATENCY_=(0)
+CPU=7
+
+# MODE_=(ping)
+# NODE_NUMBER_=(2)
+# NODE_EVENT_NUMBER_=(1000)
+# DEFAULT_EVENT_INTERVAL_=(1000)
+# LATENCY_=(0)
+# KEEP_ALIVE=false
+# CPU=3
 
 # shellcheck disable=SC2034
 for REP in $(seq 1 $REPS)
@@ -76,6 +80,7 @@ do
             NODE_NUMBER=${NODE_NUMBER} \
             NODE_EVENT_NUMBER=${NODE_EVENT_NUMBER} \
             DEFAULT_EVENT_INTERVAL=${DEFAULT_EVENT_INTERVAL} \
+            LATENCY=${LATENCY} \
             CPU=${CPU} \
             KEEP_ALIVE=${KEEP_ALIVE} "${DIR}"/k8s_exp-deploy.sh
           done
