@@ -5,7 +5,7 @@ import shutil
 
 METRIC_DIR = "metrics"
 PROCESSED_DIR = "processed"
-CONFIG_FILE = "rsg.json"
+CONFIG_FILE = "synchronizer.json"
 TS="ts"
 SIZE="size"
 
@@ -56,17 +56,13 @@ def key(config):
     start_time = config["start_time"]
 
     keys = [
-        "lsim_simulation",
-        "lsim_overlay",
-        "lsim_node_number",
-        "lsim_node_event_number",
-        "lsim_element_node_ratio",
-        "lsim_partition_number",
-        "ldb_mode",
-        "ldb_driven_mode",
-        "ldb_state_sync_interval",
-        "ldb_redundant_dgroups",
-        "ldb_dgroup_back_propagation"
+        "trcb_exp_overlay",
+        "trcb_exp_mode",
+        "trcb_exp_node_number",
+        "trcb_exp_node_event_number",
+        "trcb_exp_default_event_interval",
+        "trcb_exp_latency",
+        "ldb_mode"
     ]
 
     l = []
