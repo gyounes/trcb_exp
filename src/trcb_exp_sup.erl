@@ -121,8 +121,8 @@ configure() ->
     {Mode, Orchestration, Synchronizer}.
 
 %% @private
-trcb_exp_specs(Experiment, Orchestration, Synchronizer) ->
-    ExperimentSpecs = trcb_exp_experiments:get_specs(Experiment),
+trcb_exp_specs(Mode, Orchestration, Synchronizer) ->
+    ExperimentSpecs = trcb_exp_experiments:get_specs(Mode),
 
     OrchestrationSpecs = case Orchestration of
         undefined ->
