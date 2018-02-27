@@ -35,6 +35,7 @@ push_trcb_exp_metrics(StartTime) ->
     TRCBVars = [trcb_exp_mode,
                 trcb_exp_node_number,
                 trcb_exp_default_event_interval,
+                trcb_exp_latency,
                 trcb_exp_node_event_number],
     TRCBConfigs = get_configs(TRCBVars),
 
