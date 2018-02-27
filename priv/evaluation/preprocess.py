@@ -56,13 +56,11 @@ def key(config):
     start_time = config["start_time"]
 
     keys = [
-        "trcb_exp_overlay",
         "trcb_exp_mode",
         "trcb_exp_node_number",
-        "trcb_exp_node_event_number",
         "trcb_exp_default_event_interval",
         "trcb_exp_latency",
-        "ldb_mode"
+        "trcb_exp_node_event_number"
     ]
 
     l = []
@@ -97,7 +95,8 @@ def group_by_config(d):
 
             for type in j:
 
-                if type != "latency":
+                # if type != "latency":
+                if not type in ["latency", "tcbcast", "tcbcast_ack"]:
                     for m in j[type]:
                         m[TS] -= start_time
 
@@ -125,7 +124,7 @@ def bottom_size(type):
     """
     Return bottom size depending on the type passed as input.
     """
-    one = ["state", "digest", "delta", "delta_ack"]
+    one = ["tcbcast", "tcbcast_ack"]
     two = ["memory"]
 
     if type in one:
@@ -141,7 +140,7 @@ def add(type, sizeA, sizeB):
     Sum two sizes
     """
 
-    one = ["state", "digest", "delta", "delta_ack"]
+    one = ["tcbcast", "tcbcast_ack"]
     two = ["memory"]
 
     if type in one:
@@ -158,7 +157,7 @@ def default(type, previous):
     - if transmission, 0
     - if memory, previous value
     """
-    one = ["state", "digest", "delta", "delta_ack"]
+    one = ["tcbcast", "tcbcast_ack"]
     two = ["memory"]
 
     if type in one:
@@ -187,6 +186,8 @@ def assume_unknown_values(d):
         # get all time-series types
         types = d[key].keys()
         types.remove("latency")
+        types.remove("tcbcast")
+        types.remove("tcbcast_ack")
 
         for type in types:
 
@@ -258,7 +259,9 @@ def average(d):
         # get all time-series types
         types = d[key].keys()
         types.remove("latency")
-
+        types.remove("tcbcast_ack")
+        types.remove("tcbcast")
+        
         for type in types:
             # number of runs
             runs_number = len(d[key][type])
@@ -306,14 +309,16 @@ def aggregate(d):
         r[key] = {}
 
         # sum all lists that have these types
-        to_sum = []
-        for type in d[key]:
-            if type in ["state", "digest", "delta", "delta_ack"]:
-                # make list of lists into list
-                ls = [e for l in d[key][type] for e in l]
-                to_sum.append(ls)
+        # to_sum = []
+        # for type in d[key]:
+        #     if type in ["tcbcast", "tcbcast_ack"]:
+        #         # make list of lists into list
+        #         ls = [e["size"] for l in d[key][type] for e in l]
+        #         to_sum.append(ls)
 
-        r[key]["transmission"] = sum_lists(to_sum)
+        #r[key]["transmission"] = sum_lists(to_sum)
+        r[key]["tcbcast"] = [e["size"] for l in d[key]["tcbcast"] for e in l]
+        r[key]["tcbcast_ack"] = [e["size"] for l in d[key]["tcbcast_ack"] for e in l]
         r[key]["memory_crdt"] = []
         r[key]["memory_algorithm"] = []
         r[key]["latency_local"] = []

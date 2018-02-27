@@ -27,7 +27,8 @@ splot <- function(dir, simulation, key, output_file, label, logx) {
 
   # open device
   #png(filename=output_file, width=500, height=500, res=80)
-  png(filename=output_file, res=80)
+  # pdf(output_file)
+  png(filename=output_file, width=3000, height=3000, res=500)
 
   # style stuff
   nol = length(ls)

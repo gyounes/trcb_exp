@@ -12,7 +12,8 @@ pre: preprocess.py
 
 transmission: transmission.R pre
 	Rscript transmission.R
-	$(VIEWER) *transmission*.png &
+	# $(VIEWER) *transmission*.png &
+	$(VIEWER) *tcbcast*.png &
 
 memory: memory.R pre
 	Rscript memory.R

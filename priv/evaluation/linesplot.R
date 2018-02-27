@@ -1,7 +1,7 @@
 source("util.R")
 
 # draw!
-splot <- function(dir, simulation, key, output_file, ylabel, logy) {
+splot <- function(dir, simulation, key, output_file, ylabel, xlabel, logy) {
   CLOSE_TO_ZERO <- 1 # 10^-10
 
   load_dependencies(c("RColorBrewer"))
@@ -44,8 +44,9 @@ splot <- function(dir, simulation, key, output_file, ylabel, logy) {
 
 
   # open device
+  png(filename=output_file, width=3000, height=3000, res=500)
   #png(filename=output_file, width=500, height=500, res=80)
-  png(filename=output_file, res=80)
+  # png(filename=output_file, res=80)
 
   # style stuff
   nol = length(ls)
@@ -66,7 +67,7 @@ splot <- function(dir, simulation, key, output_file, ylabel, logy) {
     type="n",
     xlim=c(0, maxx), # max x
     ylim=ylimit, # max y
-    xlab="Time (s)", # x axis label
+    xlab=xlabel, # x axis label
     ylab=ylabel, # y axis label
     log=logaxis
   )
