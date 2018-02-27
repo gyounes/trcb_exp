@@ -68,8 +68,8 @@ end_per_testcase(Case, Config) ->
 all() ->
     [
      test_trcb_base,
-     test_trcb_dots,
-     test_trcb_ping
+     test_trcb_dots
+     % test_trcb_ping
     ].
 
 %% ===================================================================
