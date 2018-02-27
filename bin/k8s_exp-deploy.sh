@@ -82,6 +82,9 @@ spec:
       - name: "${SYNCRONIZER_NAME}"
         image: "${IMAGE}"
         imagePullPolicy: "${PULL_IMAGE}"
+        resources:
+          requests:
+            cpu: 2
         env:
         - name: ORCHESTRATION
           value: "${ORCHESTRATION}"
