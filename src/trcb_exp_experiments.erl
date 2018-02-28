@@ -69,7 +69,8 @@ trcb_exp(Mode) ->
 
       %% gen_server regsters module name with pid
       %% that is why it works instead of trcb_exp_experiment_runner:self()
-      trcb:tcbdelivery(trcb_exp_experiment_runner),
+      % trcb:tcbdelivery(trcb_exp_experiment_runner),
+      trcb:tcbdelivery(trcb_exp_experiment_runner:self()),
 
       put(delivery, 0),
       put(localTag, InitialTag),
@@ -88,7 +89,9 @@ trcb_exp(Mode) ->
             TagUpdFun(node(), get(localTag))
         end,
         put(localTag, LocalTagNew),
+        lager:info("local: delivery before is ~p", [get(delivery)]),
         put(delivery, get(delivery) + 1),
+        lager:info("local: delivery after is ~p", [get(delivery)]),
         trcb:tcbcast(msg, LocalTagNew)
     end,
 
@@ -104,7 +107,9 @@ trcb_exp(Mode) ->
 
     HandleInfoFun = fun({delivery, A, B, _C}) ->
         TagUpdFun=get(tagUpdFun),
+        lager:info("peer: delivery before is ~p", [get(delivery)]),
         put(delivery, get(delivery) + 1),
+        lager:info("peer: delivery after is ~p", [get(delivery)]),
         LocalTagNew = case Mode of
           dots ->
             TagUpdFun({A, B}, get(localTag));
@@ -127,7 +132,8 @@ ping() ->
 
       pingserv:fullmembership(Members),
 
-      pingserv:setreply(trcb_exp_experiment_runner),
+      % pingserv:setreply(trcb_exp_experiment_runner),
+      pingserv:setreply(trcb_exp_experiment_runner:self()),
 
       put(log, orddict:new()),
       put(ctr, 0)
