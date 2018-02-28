@@ -72,8 +72,12 @@ handle_cast(exp_go, State) ->
 
 handle_cast(metrics_go, State) ->
     ?LOG("Received METRICS GO. Pushing metrics."),
-    % trcb_exp_experiments_support:push_ping_data(),
-    trcb_exp_experiments_support:push_lmetrics(),
+    case trcb_exp_config:get(trcb_exp_mode) of
+        ping ->
+            trcb_exp_experiments_support:push_ping_data();
+        _ ->
+            trcb_exp_experiments_support:push_lmetrics()
+    end,
     tell({metrics_done, node()}),
     {noreply, State};
 
