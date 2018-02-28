@@ -36,7 +36,7 @@
          terminate/2,
          code_change/3]).
 
--export([self/0]).
+-export([myself/0]).
 
 -record(state, {event_count :: non_neg_integer(),
                 start_fun :: function(),
@@ -172,5 +172,5 @@ end_experiment() ->
             trcb_exp_synchronizer:experiment_end()
     end.
 
-self() ->
+myself() ->
     self().

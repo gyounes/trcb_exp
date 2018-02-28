@@ -70,7 +70,7 @@ trcb_exp(Mode) ->
       %% gen_server regsters module name with pid
       %% that is why it works instead of trcb_exp_experiment_runner:self()
       % trcb:tcbdelivery(trcb_exp_experiment_runner),
-      trcb:tcbdelivery(trcb_exp_experiment_runner:self()),
+      trcb:tcbdelivery(trcb_exp_experiment_runner:myself()),
 
       put(delivery, 0),
       put(localTag, InitialTag),
@@ -133,7 +133,7 @@ ping() ->
       pingserv:fullmembership(Members),
 
       % pingserv:setreply(trcb_exp_experiment_runner),
-      pingserv:setreply(trcb_exp_experiment_runner:self()),
+      pingserv:setreply(trcb_exp_experiment_runner:myself()),
 
       put(log, orddict:new()),
       put(ctr, 0)
