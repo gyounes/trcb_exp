@@ -54,7 +54,7 @@ experiment_end() ->
 init([]) ->
     schedule_create_barrier(),
 
-    ?LOG("trcb_exp_synchronizer initialized"),
+    lager:info("trcb_exp_synchronizer initialized"),
     {ok, #state{number_of_rules=0}}.
 
 handle_call(experiment_end, _From, State) ->
@@ -66,12 +66,12 @@ handle_call(Msg, _From, State) ->
     {noreply, State}.
 
 handle_cast(exp_go, State) ->
-    ?LOG("Received EXP GO. Starting experiment."),
+    lager:info("Received EXP GO. Starting experiment."),
     trcb_exp_experiment_runner:start(),
     {noreply, State};
 
 handle_cast(metrics_go, State) ->
-    ?LOG("Received METRICS GO. Pushing metrics."),
+    lager:info("Received METRICS GO. Pushing metrics."),
     case trcb_exp_config:get(trcb_exp_mode) of
         ping ->
             trcb_exp_experiments_support:push_ping_data();

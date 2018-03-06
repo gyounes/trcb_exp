@@ -51,7 +51,7 @@ start_link() ->
 %% gen_server callbacks
 init([]) ->
     schedule_create_barrier(),
-    ?LOG("trcb_exp_synchronizer_master initialized"),
+    lager:info("trcb_exp_synchronizer_master initialized"),
     {ok, #state{nodes=[],
                 connect_done=ordsets:new(),
                 exp_done=ordsets:new(),
@@ -66,13 +66,13 @@ handle_cast({connect_done, NodeName},
             #state{connect_done=ConnectDone0,
                    start_time=T0}=State) ->
 
-    ?LOG("Received CONNECT DONE from ~p", [NodeName]),
+    lager:info("Received CONNECT DONE from ~p", [NodeName]),
 
     ConnectDone1 = ordsets:add_element(NodeName, ConnectDone0),
 
     T1 = case ordsets:size(ConnectDone1) == node_number() of
         true ->
-            ?LOG("Everyone is CONNECT DONE. SIM GO!"),
+            lager:info("Everyone is CONNECT DONE. SIM GO!"),
             tell(exp_go),
             trcb_exp_util:generate_timestamp(?UNIT);
         false ->
@@ -85,14 +85,15 @@ handle_cast({connect_done, NodeName},
 handle_cast({exp_done, NodeName},
             #state{exp_done=ExpDone0}=State) ->
 
-    ?LOG("Received SIM DONE from ~p", [NodeName]),
+    lager:info("Received SIM DONE from ~p", [NodeName]),
 
     ExpDone1 = ordsets:add_element(NodeName, ExpDone0),
 
     case ordsets:size(ExpDone1) == node_number() of
         true ->
-            ?LOG("Everyone is SIM DONE. METRICS GO!"),
-            tell(metrics_go);
+            lager:info("Everyone is SIM DONE. METRICS GO!"),
+            % tell(metrics_go);
+            trcb_exp_orchestration:stop_tasks([exp, synchronizer]);
         false ->
             ok
     end,
@@ -103,13 +104,13 @@ handle_cast({metrics_done, NodeName},
             #state{metrics_done=MetricsDone0,
                    start_time=StartTime}=State) ->
 
-    ?LOG("Received METRICS DONE from ~p", [NodeName]),
+    lager:info("Received METRICS DONE from ~p", [NodeName]),
 
     MetricsDone1 = ordsets:add_element(NodeName, MetricsDone0),
 
     case ordsets:size(MetricsDone1) == node_number() of
         true ->
-            ?LOG("Everyone is METRICS DONE. STOP!!!"),
+            lager:info("Everyone is METRICS DONE. STOP!!!"),
             trcb_exp_experiments_support:push_trcb_exp_metrics(StartTime),
             trcb_exp_orchestration:stop_tasks([exp, synchronizer]);
         false ->
