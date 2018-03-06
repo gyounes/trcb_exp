@@ -36,6 +36,7 @@ generate_spec(IpStr, Port) ->
 
     {ParsedName, ParsedIp, Port}.
 
+%% private
 generate_timestamp(Unit) ->
-	% erlang:system_time(Unit).
-	erlang:monotonic_time(Unit).
+% erlang:system_time(Unit).
+erlang:monotonic_time(Unit).
