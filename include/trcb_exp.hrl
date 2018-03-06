@@ -17,22 +17,22 @@
 
 
 %% logging
--ifdef(debug).
--define(LOG(M), lager:info(M)).
--define(LOG(M, A), lager:info(M, A)).
--else.
--define(LOG(_M), ok).
--define(LOG(_M, _A), ok).
--endif.
-
+% -ifdef(debug).
 % -define(LOG(M), lager:info(M)).
 % -define(LOG(M, A), lager:info(M, A)).
+% -else.
+% -define(LOG(_M), ok).
+% -define(LOG(_M, _A), ok).
+% -endif.
+
+-define(LOG(M), lager:info(M)).
+-define(LOG(M, A), lager:info(M, A)).
 
 %% barrier
 -define(PORT, 6866).
 -define(BARRIER_PORT, 6867).
 -define(REDIS_PORT, 6379).
--define(TCP_OPTIONS, [binary, {active, true}, {packet, 4}, {keepalive, true}]).
+-define(TCP_OPTIONS, [binary, {active, true}, {packet, 4}, {keepalive, true}, {nodelay, true}]).
 
 -define(UNIT, millisecond).
 
