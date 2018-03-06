@@ -92,8 +92,7 @@ handle_cast({exp_done, NodeName},
     case ordsets:size(ExpDone1) == node_number() of
         true ->
             lager:info("Everyone is SIM DONE. METRICS GO!"),
-            % tell(metrics_go);
-            trcb_exp_orchestration:stop_tasks([exp, synchronizer]);
+            tell(metrics_go);
         false ->
             ok
     end,
