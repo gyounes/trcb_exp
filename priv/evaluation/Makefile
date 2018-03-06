@@ -23,5 +23,19 @@ latency: latency.R pre
 	Rscript latency.R
 	$(VIEWER) *latency*.png &
 
+transmission2: 
+	Rscript transmission.R
+	$(VIEWER) *tcbcast*.png &
+
+memory2: 
+	Rscript memory.R
+	$(VIEWER) *memory*.png &
+
+latency2: 
+	Rscript latency.R
+	$(VIEWER) *latency*.png &
+
+graphs: transmission2 memory2 latency2
+
 clean:
 	rm *.png
