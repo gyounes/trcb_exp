@@ -175,6 +175,9 @@ EOF
 
 kubectl create -f "${FILE}"
 
+# sleep 5
+# ~/Documents/Git/kubetail/kubetail $TIMESTAMP > $TIMESTAMP &
+
 while [ $(kubectl get pods -l timestamp=$TIMESTAMP 2>/dev/null | grep exp | wc -l) -gt 0 ]; do
     sleep 1
 done
