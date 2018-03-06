@@ -41,7 +41,7 @@
 
 -define(EVENT_NUMBER_PING, 20).
 -define(EVENT_NUMBER_TRCB, 15).
--define(EVENT_INTERVAL, 1000).
+-define(EVENT_INTERVAL, 100).
 -define(LATENCY, 0).
 
 %% ===================================================================
@@ -77,10 +77,12 @@ all() ->
 %% ===================================================================
 
 test_trcb_base(_Config) ->
-    run_test(base, 7, ?EVENT_NUMBER_TRCB, ?LATENCY).
+    run_test(base, 5, 100, 10),
+    run_test(base, 5, 500, 10).
 
 test_trcb_dots(_Config) ->
-    run_test(dots, 7, ?EVENT_NUMBER_TRCB, ?LATENCY).
+    run_test(dots, 5, 100, 10),
+    run_test(dots, 5, 500, 10).
 
 test_trcb_ping(_Config) ->
     run_test(ping, 2, ?EVENT_NUMBER_PING, ?LATENCY).
