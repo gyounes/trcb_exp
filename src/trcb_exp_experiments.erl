@@ -61,16 +61,19 @@ memory() ->
 %% @private
 trcb_exp(Mode) ->
     StartFun = fun() ->
-      {ok, Members} = partisan_peer_service:members(),
+      % {ok, Members} = partisan_peer_service:members(),
 
-      trcb:tcbfullmembership(Members),
+      Nodes = [ X || {X, _, _} <- trcb_exp_orchestration:get_tasks(exp, ?PORT, true)],
 
-      {InitialTag, TagUpdFun} = trcb:tcbgettagdetails(),
+
+      trcb:tcbfullmembership(Nodes),
 
       %% gen_server regsters module name with pid
       %% that is why it works instead of trcb_exp_experiment_runner:self()
-      % trcb:tcbdelivery(trcb_exp_experiment_runner),
-      trcb:tcbdelivery(trcb_exp_experiment_runner:myself()),
+      ok = trcb:tcbdelivery(trcb_exp_experiment_runner),
+      % trcb:tcbdelivery(trcb_exp_experiment_runner:myself()),
+
+      {InitialTag, TagUpdFun} = trcb:tcbgettagdetails(),
 
       put(delivery, 0),
       put(localTag, InitialTag),
@@ -82,17 +85,18 @@ trcb_exp(Mode) ->
 
     EventFun = fun(_Arg) ->
         TagUpdFun=get(tagUpdFun),
-        LocalTagNew = case Mode of
+        LocalTag=get(localTag),
+        NewTag = case Mode of
           dots ->
-            TagUpdFun(local, get(localTag));
+            trcb:tcbcast(msg, LocalTag),
+            TagUpdFun(local, LocalTag);
           base ->
-            TagUpdFun(node(), get(localTag))
+            LocalTagNew = TagUpdFun(node(), LocalTag),
+            trcb:tcbcast(msg, LocalTagNew),
+            LocalTagNew
         end,
-        put(localTag, LocalTagNew),
-        lager:info("local: delivery before is ~p", [get(delivery)]),
-        put(delivery, get(delivery) + 1),
-        lager:info("local: delivery after is ~p", [get(delivery)]),
-        trcb:tcbcast(msg, LocalTagNew)
+        put(localTag, NewTag),
+        put(delivery, get(delivery) + 1)
     end,
 
     TotalEventsFun = fun() ->
@@ -107,9 +111,7 @@ trcb_exp(Mode) ->
 
     HandleInfoFun = fun({delivery, A, B, _C}) ->
         TagUpdFun=get(tagUpdFun),
-        lager:info("peer: delivery before is ~p", [get(delivery)]),
         put(delivery, get(delivery) + 1),
-        lager:info("peer: delivery after is ~p", [get(delivery)]),
         LocalTagNew = case Mode of
           dots ->
             TagUpdFun({A, B}, get(localTag));
@@ -132,8 +134,8 @@ ping() ->
 
       pingserv:fullmembership(Members),
 
-      % pingserv:setreply(trcb_exp_experiment_runner),
-      pingserv:setreply(trcb_exp_experiment_runner:myself()),
+      pingserv:setreply(trcb_exp_experiment_runner),
+      % pingserv:setreply(trcb_exp_experiment_runner:myself()),
 
       put(log, orddict:new()),
       put(ctr, 0)
@@ -161,7 +163,7 @@ ping() ->
           Log = get(log),
           pingserv:push_metrics(Log),
           Metrics = pingserv:get_metrics(),
-          lager:info("Metrics are ~p", [Metrics]),
+          ?LOG("Metrics are ~p", [Metrics]),
           Val;
         false ->
           Val
