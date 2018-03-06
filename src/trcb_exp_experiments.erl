@@ -61,10 +61,16 @@ memory() ->
 %% @private
 trcb_exp(Mode) ->
     StartFun = fun() ->
-      % {ok, Members} = partisan_peer_service:members(),
 
-      Nodes = [ X || {X, _, _} <- trcb_exp_orchestration:get_tasks(exp, ?PORT, true)],
+      NodesNumber = trcb_exp_config:get(trcb_exp_node_number),
+      {ok, Members} = partisan_peer_service:members(),
 
+      Nodes = case length(Members) == NodesNumber of
+        true ->
+          Members;
+        false ->
+          [ X || {X, _, _} <- trcb_exp_orchestration:get_tasks(exp, ?PORT, true)]
+      end,
 
       trcb:tcbfullmembership(Nodes),
 
@@ -163,7 +169,7 @@ ping() ->
           Log = get(log),
           pingserv:push_metrics(Log),
           Metrics = pingserv:get_metrics(),
-          ?LOG("Metrics are ~p", [Metrics]),
+          lager:info("Metrics are ~p", [Metrics]),
           Val;
         false ->
           Val
