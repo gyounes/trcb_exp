@@ -334,7 +334,8 @@ def aggregate(d):
         for lord in d[key]["latency"]: # local or remote dict
             for lort in lord: # local or remote type
                 k = "latency_" + lort
-                latency_values = map(to_ms, lord[lort])
+                latency_values = lord[lort]
+                # latency_values = map(to_ms, lord[lort])
                 r[key][k].extend(latency_values)
 
     return r
