@@ -2,12 +2,12 @@
 main <- function() {
   # draw!
   metrics_dir <- "processed"
-  ylabel <- "Transmission (B)"
+  ylabel <- "Transmission (words)"
   xlabel <- "Time (s)"
   logy <- FALSE
   logx <- TRUE
-  key1 <- "tcbcast_ack"
-  key2 <- "tcbcast"
+  # key2 <- "tcbcast_ack"
+  key1 <- "tcbcast"
 
   # list of simulations
   simulations <- list.files(metrics_dir)
@@ -17,15 +17,15 @@ main <- function() {
     dir <- paste(metrics_dir, simulation, sep="/")
 
     # source("boxplot.R")
-    # source("linesplot.R")
-    source("cdfplot.R")
+    source("linesplot.R")
+    # source("cdfplot.R")
 
     output_file <- paste(simulation, "_", key1, "_line", ".png", sep="")
-    splot(dir, simulation, key1, output_file, ylabel, logx)
-    # splot(dir, simulation, key1, output_file, ylabel, xlabel, logy)
+    # splot(dir, simulation, key1, output_file, ylabel, logx)
+    splot(dir, simulation, key1, output_file, ylabel, xlabel, logy)
 
-    output_file <- paste(simulation, "_", key2, "_line", ".png", sep="")
-    splot(dir, simulation, key2, output_file, ylabel, logx)
+    # output_file <- paste(simulation, "_", key2, "_line", ".png", sep="")
+    # splot(dir, simulation, key2, output_file, ylabel, logx)
     # splot(dir, simulation, key2, output_file, ylabel, xlabel, logy)
 
 #    source("barplot.R")
