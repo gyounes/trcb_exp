@@ -5,7 +5,7 @@ else ifeq ($(OS), Darwin)
 	VIEWER=open
 endif
 
-all: transmission memory latency
+all: transmission memory processing
 
 pre: preprocess.py
 	python preprocess.py
@@ -23,6 +23,10 @@ latency: latency.R pre
 	Rscript latency.R
 	$(VIEWER) *latency*.png &
 
+processing: processing.R pre
+	Rscript processing.R
+	$(VIEWER) *latency*.png &
+
 transmission2: 
 	Rscript transmission.R
 	$(VIEWER) *tcbcast*.png &
@@ -35,7 +39,11 @@ latency2:
 	Rscript latency.R
 	$(VIEWER) *latency*.png &
 
-graphs: transmission2 memory2 latency2
+processing2: 
+	Rscript processing.R
+	$(VIEWER) *latency*.png &
+
+graphs: transmission2 memory2 processing2
 
 clean:
 	rm *.png
