@@ -2,11 +2,11 @@
 main <- function() {
      # source("boxplot.R")
   source("linesplot.R")
-    source("cdfplot.R")
+  # source("cdfplot.R")
   
 # draw!
   metrics_dir <- "processed"
-  ylabel <- "Memory (B)"
+  ylabel <- "Memory (words)"
   xlabel <- "Time (s)"
   logy <- FALSE
   logx <- TRUE
@@ -26,8 +26,8 @@ main <- function() {
     # memory algorithm
     key <- "memory_algorithm"
     output_file <- paste(simulation, "_", key, ".png", sep="")
-    splot(dir, simulation, key, output_file, ylabel, logx)
-    # splot(dir, simulation, key, output_file, ylabel, xlabel, logy)
+    # splot(dir, simulation, key, output_file, ylabel, logx)
+    splot(dir, simulation, key, output_file, ylabel, xlabel, logy)
   }
 }
 
