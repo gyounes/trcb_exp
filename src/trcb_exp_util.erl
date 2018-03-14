@@ -39,4 +39,5 @@ generate_spec(IpStr, Port) ->
 %% private
 generate_timestamp(Unit) ->
 % erlang:system_time(Unit).
-erlang:monotonic_time(Unit).
+% erlang:monotonic_time(Unit).
+os:perf_counter(Unit).
