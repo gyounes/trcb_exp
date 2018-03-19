@@ -90,7 +90,7 @@ push_lmetrics() ->
     %% process latency
     All2 = orddict:store(latency, Latency, All1),
     FilePath = file_path(node()),
-    File = encode(All2),        
+    File = encode(All2),
     store(FilePath, File),
     ok.
 
