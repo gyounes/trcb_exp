@@ -54,16 +54,14 @@ push_lmetrics() ->
     Latency = ?LMETRICS:get_latency(),
     TransmissionTS = filter_by_ts_class(transmission, TimeSeries),
     MemoryTS = filter_by_ts_class(memory, TimeSeries),
-
     %% process transmission
-    PerMessageType = lists:foldl(
-        fun({Timestamp, transmission, {MessageType, Size}}, Acc0) ->
+    PerMessageType = dict:fold(
+        fun({Timestamp, transmission}, {MessageType, Size}, Acc0) ->
             orddict:append(MessageType, {Timestamp, Size}, Acc0)
         end,
         orddict:new(),
         TransmissionTS
     ),
-
     All0 = orddict:fold(
         fun(MessageType, Metrics, Acc0) ->
             lists:foldl(
@@ -79,10 +77,9 @@ push_lmetrics() ->
         orddict:new(),
         PerMessageType
     ),
-
     %% process memory
-    All1 = lists:foldl(
-        fun({Timestamp, memory, {CRDTSize, RestSize}}, Acc0) ->
+    All1 = dict:fold(
+        fun({Timestamp, memory}, {CRDTSize, RestSize}, Acc0) ->
             V = [{ts, Timestamp},
                  {size, [CRDTSize, RestSize]}],
             orddict:append(memory, V, Acc0)
@@ -90,14 +87,9 @@ push_lmetrics() ->
         All0,
         MemoryTS
     ),
-
     %% process latency
     All2 = orddict:store(latency, Latency, All1),
-
     FilePath = file_path(node()),
-    File = encode(All2),
-
-    store(FilePath, File),
     ok.
 
 -spec push_ping_data() -> ok.
@@ -114,8 +106,8 @@ push_ping_data() ->
 
 %% @private
 filter_by_ts_class(Class, TS) ->
-    lists:filter(
-        fun({_, MClass, _}) ->
+    dict:filter(
+        fun({_, MClass}, _) ->
                 MClass == Class
         end,
         TS
