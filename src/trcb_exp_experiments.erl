@@ -112,17 +112,36 @@ trcb_exp(Mode) ->
     CheckEndFun = fun(NodeNumber, NodeEventNumber) ->
         TheoTot = NodeNumber * NodeEventNumber,
         PracTotDelv = TotalEventsFun(),
-        PracTotDelv == TheoTot
+        case PracTotDelv == TheoTot of
+          true ->
+            trcb:tcbstopresend(),
+            lmetrics:stop_scheduling(),
+            true;
+          false ->
+            false
+        end
     end,
 
     HandleInfoFun = fun({delivery, A, B, _C}) ->
         TagUpdFun=get(tagUpdFun),
+        case get(delivery) rem 500 of
+          0 ->
+            ?LOG("delivering ~p", [get(localTag)]);
+          _ ->
+            ok
+        end,
         put(delivery, get(delivery) + 1),
         LocalTagNew = case Mode of
           dots ->
             TagUpdFun({A, B}, get(localTag));
           base ->
             TagUpdFun(A, get(localTag))
+        end,
+        case get(delivery) rem 500 of
+          0 ->
+            ?LOG("delivering ~p", [get(localTag)]);
+          _ ->
+            ok
         end,
         put(localTag, LocalTagNew)
     end,
