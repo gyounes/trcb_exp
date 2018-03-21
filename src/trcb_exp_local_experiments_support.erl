@@ -75,7 +75,7 @@ start(Options) ->
 
         TRCBSettingsTemp = proplists:get_value(trcb_exp_settings, Options),
         Mode = proplists:get_value(trcb_exp_mode, TRCBSettingsTemp),
-        DropPercent = proplists:get_value(trcb_drop_percent, TRCBSettingsTemp),
+        DropPercent = proplists:get_value(trcb_exp_drop_percent, TRCBSettingsTemp),
         Latency = proplists:get_value(trcb_exp_latency, TRCBSettingsTemp),
 
         case Mode of
