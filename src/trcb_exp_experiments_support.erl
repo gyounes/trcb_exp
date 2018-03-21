@@ -56,8 +56,8 @@ push_lmetrics() ->
     TransmissionTS = filter_by_ts_class(transmission, TimeSeries),
     MemoryTS = filter_by_ts_class(memory, TimeSeries),
     %% process transmission
-    PerMessageType = dict:fold(
-        fun({Timestamp, transmission}, {MessageType, Size}, Acc0) ->
+    PerMessageType = lists:foldl(
+        fun({Timestamp, transmission, {MessageType, Size}}, Acc0) ->
             orddict:append(MessageType, {Timestamp, Size}, Acc0)
         end,
         orddict:new(),
@@ -79,8 +79,8 @@ push_lmetrics() ->
         PerMessageType
     ),
     %% process memory
-    All1 = dict:fold(
-        fun({Timestamp, memory}, {CRDTSize, RestSize}, Acc0) ->
+    All1 = lists:foldl(
+        fun({Timestamp, memory, {CRDTSize, RestSize}}, Acc0) ->
             V = [{ts, Timestamp},
                  {size, [CRDTSize, RestSize]}],
             orddict:append(memory, V, Acc0)
@@ -109,8 +109,8 @@ push_ping_data() ->
 
 %% @private
 filter_by_ts_class(Class, TS) ->
-    dict:filter(
-        fun({_, MClass}, _) ->
+    lists:filter(
+        fun({_, MClass, _}) ->
                 MClass == Class
         end,
         TS
