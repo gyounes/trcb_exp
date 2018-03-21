@@ -48,7 +48,6 @@ MODE_=(base dots)
 NODE_NUMBER_=(5)
 NODE_EVENT_NUMBER_=(10)
 DEFAULT_EVENT_INTERVAL_=(100)
-KEEP_ALIVE=false
 LATENCY_=(0)
 CPU=7
 
@@ -57,7 +56,6 @@ CPU=7
 # NODE_EVENT_NUMBER_=(1000)
 # DEFAULT_EVENT_INTERVAL_=(1000)
 # LATENCY_=(0)
-# KEEP_ALIVE=false
 # CPU=3
 
 # shellcheck disable=SC2034
@@ -81,8 +79,7 @@ do
             NODE_EVENT_NUMBER=${NODE_EVENT_NUMBER} \
             DEFAULT_EVENT_INTERVAL=${DEFAULT_EVENT_INTERVAL} \
             LATENCY=${LATENCY} \
-            CPU=${CPU} \
-            KEEP_ALIVE=${KEEP_ALIVE} "${DIR}"/k8s_exp-deploy.sh
+            CPU=${CPU} "${DIR}"/k8s_exp-deploy.sh
           done
         done
       done
