@@ -33,7 +33,7 @@ elif [ "$1" == "local" ]; then
 
 else
   # use the latest image
-  PULL_IMAGE=IfNotPresent
+  PULL_IMAGE=Always
 
 fi
 
@@ -45,20 +45,20 @@ fi
 
 # trcb_exp configuration
 MODE_=(base dots)
-NODE_NUMBER_=(5)
-NODE_EVENT_NUMBER_=(10)
-DEFAULT_EVENT_INTERVAL_=(100)
-KEEP_ALIVE=false
-LATENCY_=(0)
+NODE_NUMBER_=(32)
+DEFAULT_EVENT_INTERVAL_=(5)
+# DEFAULT_MSG_NUMBER=50
+DROP_PERCENT_=(5)
+NODE_EVENT_NUMBER=1000
+LATENCY_=(10)
 CPU=7
 
-# MODE_=(ping)
-# NODE_NUMBER_=(2)
-# NODE_EVENT_NUMBER_=(1000)
-# DEFAULT_EVENT_INTERVAL_=(1000)
-# LATENCY_=(0)
-# KEEP_ALIVE=false
-# CPU=3
+# MODE_=(base dots ping)
+# NODE_NUMBER_=(5 10)
+# NODE_EVENT_NUMBER_=(100 1000)
+# DEFAULT_EVENT_INTERVAL_=(10 100)
+# LATENCY_=(0 20)
+# CPU=7
 
 # shellcheck disable=SC2034
 for REP in $(seq 1 $REPS)
@@ -67,28 +67,30 @@ do
   do
     for NODE_NUMBER in "${NODE_NUMBER_[@]}"
     do
-      for NODE_EVENT_NUMBER in "${NODE_EVENT_NUMBER_[@]}"
+      for DEFAULT_EVENT_INTERVAL in "${DEFAULT_EVENT_INTERVAL_[@]}"
       do
-        for DEFAULT_EVENT_INTERVAL in "${DEFAULT_EVENT_INTERVAL_[@]}"
+        for LATENCY in "${LATENCY_[@]}"
         do
-          for LATENCY in "${LATENCY_[@]}"
+          for DROP_PERCENT in "${DROP_PERCENT_[@]}"
           do
             BRANCH=${BRANCH} \
             IMAGE=${IMAGE} \
             PULL_IMAGE=${PULL_IMAGE} \
             MODE=${MODE} \
             NODE_NUMBER=${NODE_NUMBER} \
-            NODE_EVENT_NUMBER=${NODE_EVENT_NUMBER} \
             DEFAULT_EVENT_INTERVAL=${DEFAULT_EVENT_INTERVAL} \
+            NODE_EVENT_NUMBER=${NODE_EVENT_NUMBER} \
+            DROP_PERCENT=${DROP_PERCENT} \
             LATENCY=${LATENCY} \
-            CPU=${CPU} \
-            KEEP_ALIVE=${KEEP_ALIVE} "${DIR}"/k8s_exp-deploy.sh
+            CPU=${CPU} "${DIR}"/k8s_exp-deploy.sh
           done
         done
       done
     done
   done
 done
+            # NODE_EVENT_NUMBER=${NODE_EVENT_NUMBER} \
+            # NODE_EVENT_NUMBER=$((1000/${DEFAULT_EVENT_INTERVAL}*${DEFAULT_MSG_NUMBER})) \
 
 #"${DIR}"/start-redis-sync.sh
 
