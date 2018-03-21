@@ -83,6 +83,11 @@ configure() ->
                   trcb_exp_default_event_interval,
                   1000),
 
+    %% configure msg drop percentage
+    configure_int("DROP_PERCENT",
+                  trcb_exp_drop_percent,
+                  ?DEFAULT_DROP_PERCENT),
+
     %% configure latency
     configure_int("LATENCY",
                   trcb_exp_latency,
