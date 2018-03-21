@@ -52,7 +52,7 @@ splot <- function(dir, simulation, key, output_file, ylabel, xlabel, logy) {
   nol = length(ls)
   noc = if(nol >= 3) nol else 3
   colors <- brewer.pal(name="Set1", n=noc)
-  line_width = 2
+  line_width = 1
   line_types = c(1:nol)
   plot_chars <- seq(nol)
 

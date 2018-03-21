@@ -1,7 +1,7 @@
 # main function
 main <- function() {
-    source("cdfplot.R")
-  # source("linesplot.R")
+    # source("cdfplot.R")
+  source("linesplot.R")
   # source("boxplot.R")
   # draw!
   metrics_dir <- "processed"
@@ -9,8 +9,8 @@ main <- function() {
   ylabel2 <- "Delivering time (ms)"
   xlabel1 <- "Number of Sent messages"
   xlabel2 <- "Number of delivered messages"
-   logx <- TRUE
-    # logy <- FALSE
+  logx <- TRUE
+  logy <- FALSE
 
   # list of simulations
   simulations <- list.files(metrics_dir)
@@ -22,14 +22,14 @@ main <- function() {
     # latency local
     key <- "latency_local"
     output_file <- paste(simulation, "_", key, ".png", sep="")
-    splot(dir, simulation, key, output_file, ylabel1, logx)
-  	# splot(dir, simulation, key, output_file, ylabel1, xlabel1, logy)
+    # splot(dir, simulation, key, output_file, ylabel1, logx)
+  	splot(dir, simulation, key, output_file, ylabel1, xlabel1, logy)
 
     # latency remote
     key <- "latency_remote"
     output_file <- paste(simulation, "_", key, ".png", sep="")
-    splot(dir, simulation, key, output_file, ylabel2, logx)
-  	# splot(dir, simulation, key, output_file, ylabel2, xlabel2, logy)
+    # splot(dir, simulation, key, output_file, ylabel2, logx)
+  	splot(dir, simulation, key, output_file, ylabel2, xlabel2, logy)
   }
 }
 

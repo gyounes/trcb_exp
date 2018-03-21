@@ -3,7 +3,7 @@ main <- function() {
   # draw!
   metrics_dir <- "processed"
   ylabel <- "Transmission (words)"
-  xlabel <- "Time (s)"
+  xlabel <- "Time (ms)"
   logy <- FALSE
   logx <- TRUE
   # key2 <- "tcbcast_ack"
