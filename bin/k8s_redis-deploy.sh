@@ -28,6 +28,9 @@ spec:
       - name: redis
         image: redis
         imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 7
 EOF
 
 kubectl create -f ${FILE}
