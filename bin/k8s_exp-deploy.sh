@@ -82,7 +82,7 @@ spec:
     imagePullPolicy: "${PULL_IMAGE}"
     resources:
       requests:
-        cpu: 7
+        cpu: "${CPU}"
     env:
     - name: ORCHESTRATION
       value: "${ORCHESTRATION}"
@@ -112,7 +112,6 @@ spec:
       value: "${LATENCY}"
     - name: SYNCHRONIZER
       value: "true"
-
 EOF
 
 # start the synchronizer
@@ -168,12 +167,9 @@ spec:
       value: "${DROP_PERCENT}"
     - name: LATENCY
       value: "${LATENCY}"
-    - name: KEEP_ALIVE
-      value: "${KEEP_ALIVE}"
     - name: SYNCHRONIZER
       value: "false"
 EOF
-
   ## add loop to test connection to kubectl and keep waiting in case connection is lost
   kubectl create -f "${FILE}"
 done
