@@ -16,7 +16,6 @@
 -define(DEFAULT_LATENCY, 0).
 -define(DEFAULT_DROP_PERCENT, 0).
 
-
 %% logging
 -ifdef(debug).
 -define(LOG(M), lager:info(M)).
