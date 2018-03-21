@@ -43,6 +43,7 @@
 -define(EVENT_NUMBER_TRCB, 15).
 -define(EVENT_INTERVAL, 100).
 -define(LATENCY, 0).
+-define(DROP_PERCENT, 0).
 
 %% ===================================================================
 %% common_test callbacks
@@ -77,22 +78,23 @@ all() ->
 %% ===================================================================
 
 test_trcb_base(_Config) ->
-    run_test(base, 5, 100, 10),
-    run_test(base, 5, 500, 10).
+    run_test(base, 5, 100, 10, 5),
+    run_test(base, 5, 500, 10, 0).
 
 test_trcb_dots(_Config) ->
-    run_test(dots, 5, 100, 10),
-    run_test(dots, 5, 500, 10).
+    run_test(dots, 5, 100, 10, 5),
+    run_test(dots, 5, 500, 10, 0).
 
 test_trcb_ping(_Config) ->
-    run_test(ping, 2, ?EVENT_NUMBER_PING, ?LATENCY).
+    run_test(ping, 2, ?EVENT_NUMBER_PING, ?LATENCY, ?DROP_PERCENT).
 
 %% @private
-run_test(Mode, NodeNumber, EventNumber, Latency) ->
+run_test(Mode, NodeNumber, EventNumber, Latency, DropPercent) ->
     Options = [{node_number, NodeNumber},
                {trcb_exp_settings,
                 [{trcb_exp_node_number, NodeNumber},
                  {trcb_exp_mode, Mode},
+                 {trcb_exp_drop_percent, DropPercent},
                  {trcb_exp_latency, Latency},
                  {trcb_exp_default_event_interval, ?EVENT_INTERVAL},
                  {trcb_exp_node_event_number, EventNumber}]}],
