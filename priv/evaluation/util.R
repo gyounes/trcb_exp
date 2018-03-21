@@ -29,8 +29,9 @@ get_labels <- function(keys) {
   labels[["dots"]] = "Dot-based"
   labels[["2"]] = " [Nodes:"
   labels[["3"]] = ", "
-  labels[["4"]] = "MsgPerSec, Latency:"
-  labels[["5"]] = "ms, MsgsPerNode:"
+  labels[["4"]] = "msg/s, Drop:"
+  labels[["5"]] = "%, Latency:"
+  labels[["6"]] = "ms, msg/node:"
 
   lapply(
     keys,
@@ -47,6 +48,8 @@ get_labels <- function(keys) {
         parts[c(4)],
         labels[["5"]],
         parts[c(5)],
+        labels[["6"]],
+        parts[c(6)],
         "]",
         sep=""
       )
