@@ -75,7 +75,7 @@ start(Options) ->
 
         TRCBSettingsTemp = proplists:get_value(trcb_exp_settings, Options),
         Mode = proplists:get_value(trcb_exp_mode, TRCBSettingsTemp),
-        DropPercent = proplists:get_value(trcb_exp_drop_percent, TRCBSettingsTemp),
+        DropRatio = proplists:get_value(trcb_exp_drop_ratio, TRCBSettingsTemp),
         Latency = proplists:get_value(trcb_exp_latency, TRCBSettingsTemp),
 
         case Mode of
@@ -85,7 +85,7 @@ start(Options) ->
                 %% Load trcb
                 ok = rpc:call(Node, application, load, [trcb]),
                 ok = rpc:call(Node, trcb_config, set, [trcb_mode, Mode]),
-                ok = rpc:call(Node, trcb_config, set, [trcb_drop_percent, DropPercent]),
+                ok = rpc:call(Node, trcb_config, set, [trcb_drop_ratio, DropRatio]),
                 ok = rpc:call(Node, trcb_config, set, [trcb_latency, Latency])
         end,
 
