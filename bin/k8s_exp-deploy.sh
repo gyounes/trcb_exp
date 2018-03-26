@@ -7,7 +7,7 @@ ENV_VARS=(
   NODE_NUMBER
   NODE_EVENT_NUMBER
   DEFAULT_EVENT_INTERVAL
-  DROP_PERCENT
+  DROP_RATIO
   LATENCY
   CPU
 )
@@ -27,7 +27,7 @@ echo "    MODE: ${MODE}"
 echo "    NODE_NUMBER: ${NODE_NUMBER}"
 echo "    NODE_EVENT_NUMBER: ${NODE_EVENT_NUMBER}"
 echo "    DEFAULT_EVENT_INTERVAL: ${DEFAULT_EVENT_INTERVAL}"
-echo "    DROP_PERCENT: ${DROP_PERCENT}"
+echo "    DROP_RATIO: ${DROP_RATIO}"
 echo "    LATENCY: ${LATENCY}"
 echo "    CPU: ${CPU}"
 
@@ -106,8 +106,8 @@ spec:
       value: "${NODE_EVENT_NUMBER}"
     - name: DEFAULT_EVENT_INTERVAL
       value: "${DEFAULT_EVENT_INTERVAL}"
-    - name: DROP_PERCENT
-      value: "${DROP_PERCENT}"
+    - name: DROP_RATIO
+      value: "${DROP_RATIO}"
     - name: LATENCY
       value: "${LATENCY}"
     - name: SYNCHRONIZER
@@ -163,8 +163,8 @@ spec:
       value: "${NODE_EVENT_NUMBER}"
     - name: DEFAULT_EVENT_INTERVAL
       value: "${DEFAULT_EVENT_INTERVAL}"
-    - name: DROP_PERCENT
-      value: "${DROP_PERCENT}"
+    - name: DROP_RATIO
+      value: "${DROP_RATIO}"
     - name: LATENCY
       value: "${LATENCY}"
     - name: SYNCHRONIZER
