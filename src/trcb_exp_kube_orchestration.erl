@@ -95,14 +95,6 @@ http(Method, Path) ->
     run_http(Method, {URL, Headers}).
 
 %% @private
-http(Method, Path, Body0) ->
-    URL = server() ++ Path,
-    Headers = headers(),
-    ContentType = "application/json",
-    Body1 = binary_to_list(encode(Body0)),
-    run_http(Method, {URL, Headers, ContentType, Body1}).
-
-%% @private
 run_http(Method, Request) ->
     Options = [{body_format, binary}],
 
@@ -142,10 +134,6 @@ selector(Tag, FilterByTimestamp) ->
         false ->
             Selector
     end.
-
-%% @doc
-encode(D) ->
-    jsx:encode(D).
 
 %% @doc
 decode(E) when is_list(E) ->
