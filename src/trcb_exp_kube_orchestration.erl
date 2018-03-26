@@ -42,23 +42,35 @@ get_tasks(Tag, Port, FilterByTimestamp) ->
 stop_tasks(Tags) ->
     lists:foreach(
         fun(Tag) ->
-            ok = delete_task(Tag)
+            case Tag of
+                exp ->
+                    lists:foreach(
+                        fun(Id) ->
+                            ok = delete_task(Tag, Id)
+                        end,
+                        lists:seq(1, trcb_exp_config:get(trcb_exp_node_number)));
+                _ ->
+                    ok = delete_task(Tag, 0)
+            end
         end,
         Tags
     ),
     ok.
 
 %% @private
-delete_task(Tag) ->
-    Path = deploy_path() ++ "/" ++ name(Tag),
+delete_task(Tag, Id) ->
+    Path = case Tag of
+            asd ->
+                pods_path() ++ selector(Tag, true) ++ ",id%3D" ++ integer_to_list(Id);
+            _ ->
+                pods_path() ++ selector(Tag, true)
+        end,
 
     Result = case http(get, Path) of
-        {ok, Body0} ->
-            Body1 = set_replicas_as_zero(Body0),
-            PR = http(put, Path, Body1),
+        {ok, _} ->
             DR = http(delete, Path),
-            case {PR, DR} of
-                {{ok, _}, {ok, _}} ->
+            case DR of
+                {ok, _} ->
                     ok;
                 _ ->
                     error
@@ -131,14 +143,6 @@ selector(Tag, FilterByTimestamp) ->
             Selector
     end.
 
-%% @private
-name(Tag) ->
-    atom_to_list(Tag) ++ "-" ++ timestamp().
-
-%% @private
-prefix() ->
-    "/apis/extensions/v1beta1/namespaces/default".
-
 %% @doc
 encode(D) ->
     jsx:encode(D).
@@ -149,10 +153,6 @@ decode(E) when is_list(E) ->
 decode(E) when is_binary(E) ->
     Opts = [{labels, atom}, return_maps],
     jsx:decode(E, Opts).
-
-%% @private
-deploy_path() ->
-    prefix() ++ "/deployments".
 
 %% @private
 generate_nodes(Map, Port) ->
@@ -176,9 +176,3 @@ generate_nodes(Map, Port) ->
         [],
         Items
     ).
-
-%% @private
-set_replicas_as_zero(Map) ->
-    Spec0 = maps:get(spec, Map),
-    Spec1 = maps:put(replicas, 0, Spec0),
-    maps:put(spec, Spec1, Map).
