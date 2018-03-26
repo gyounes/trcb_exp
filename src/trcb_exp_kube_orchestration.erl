@@ -60,10 +60,10 @@ stop_tasks(Tags) ->
 %% @private
 delete_task(Tag, Id) ->
     Path = case Tag of
-            asd ->
-                pods_path() ++ selector(Tag, true) ++ ",id%3D" ++ integer_to_list(Id);
-            _ ->
-                pods_path() ++ selector(Tag, true)
+            exp ->
+                pods_path() ++ "/" ++ atom_to_list(Tag) ++ "-" ++ timestamp() ++ "-" ++ integer_to_list(Id);
+            synchronizer ->
+                pods_path() ++ "/" ++ atom_to_list(Tag) ++ "-" ++ timestamp()
         end,
 
     Result = case http(get, Path) of
@@ -97,7 +97,6 @@ http(Method, Path) ->
 %% @private
 run_http(Method, Request) ->
     Options = [{body_format, binary}],
-
     case httpc:request(Method, Request, [{ssl, [{server_name_indication, disable}]}], Options) of
         {ok, {{_, 200, _}, _, Body}} ->
             {ok, decode(Body)};
@@ -122,7 +121,7 @@ timestamp() ->
 
 %% @private
 pods_path() ->
-    "/api/v1/pods".
+    "/api/v1/namespaces/default/pods".
 
 %% @private
 selector(Tag, FilterByTimestamp) ->
