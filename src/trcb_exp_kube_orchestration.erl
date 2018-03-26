@@ -85,7 +85,7 @@ delete_task(Tag, Id) ->
         error ->
             ?LOG("Delete failed. Trying again in 1 second"),
             timer:sleep(1000),
-            delete_task(Tag)
+            delete_task(Tag, Id)
     end.
 
 %% @private
