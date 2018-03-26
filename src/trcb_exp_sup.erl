@@ -83,10 +83,10 @@ configure() ->
                   trcb_exp_default_event_interval,
                   1000),
 
-    %% configure msg drop percentage
-    configure_int("DROP_PERCENT",
-                  trcb_exp_drop_percent,
-                  ?DEFAULT_DROP_PERCENT),
+    %% configure msg drop ratio
+    configure_float("DROP_RATIO",
+                  trcb_exp_drop_ratio,
+                  ?DEFAULT_DROP_RATIO),
 
     %% configure latency
     configure_int("LATENCY",
@@ -170,6 +170,12 @@ configure_str(Env, Var, Default) ->
 configure_int(Env, Var, Default) ->
     To = fun(V) -> integer_to_list(V) end,
     From = fun(V) -> list_to_integer(V) end,
+    configure(Env, Var, Default, To, From).
+
+%% @private
+configure_float(Env, Var, Default) ->
+    To = fun(V) -> float_to_list(V) end,
+    From = fun(V) -> list_to_float(V) end,
     configure(Env, Var, Default, To, From).
 
 %% @private
