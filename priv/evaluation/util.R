@@ -30,7 +30,7 @@ get_labels <- function(keys) {
   labels[["2"]] = " [Nodes:"
   labels[["3"]] = ", "
   labels[["4"]] = "msg/s, Drop:"
-  labels[["5"]] = "%, Latency:"
+  labels[["5"]] = ", Latency:"
   labels[["6"]] = "ms, msg/node:"
 
   lapply(
