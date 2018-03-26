@@ -62,17 +62,9 @@ memory() ->
 trcb_exp(Mode) ->
     StartFun = fun() ->
 
-      NodesNumber = trcb_exp_config:get(trcb_exp_node_number),
       {ok, Members} = partisan_peer_service:members(),
 
-      Nodes = case length(Members) == NodesNumber of
-        true ->
-          Members;
-        false ->
-          [ X || {X, _, _} <- trcb_exp_orchestration:get_tasks(exp, ?PORT, true)]
-      end,
-
-      trcb:tcbfullmembership(Nodes),
+      trcb:tcbfullmembership(Members),
 
       %% gen_server regsters module name with pid
       %% that is why it works instead of trcb_exp_experiment_runner:self()
