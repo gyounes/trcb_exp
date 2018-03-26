@@ -107,10 +107,21 @@ handle_info(join_peers, State) ->
             ToConnect = trcb_exp_overlay:to_connect(MyName,
                                                 Nodes,
                                                 Overlay),
-            ok = connect(ToConnect, ?PEER_SERVICE),
-            tell({connect_done, node()});
+            schedule_connect_peers(ToConnect);
         _ ->
             schedule_join_peers()
+    end,
+    {noreply, State};
+
+handle_info({connect_peers, ToConnect}, State) ->
+
+    ok = connect(ToConnect, ?PEER_SERVICE),
+    {ok, Members} = ?PEER_SERVICE:members(),
+    case length(Members) == node_number() of
+        true ->
+            tell({connect_done, node()});
+        _ ->
+            schedule_connect_peers(ToConnect)
     end,
     {noreply, State};
 
@@ -135,6 +146,10 @@ schedule_create_barrier() ->
 %% @private
 schedule_join_peers() ->
     timer:send_after(?INTERVAL, join_peers).
+
+%% @private
+schedule_connect_peers(ToConnect) ->
+    timer:send_after(?INTERVAL, {connect_peers, ToConnect}).
 
 %% @private
 connect([], _) ->
