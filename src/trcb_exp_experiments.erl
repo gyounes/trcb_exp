@@ -77,7 +77,7 @@ trcb_exp(Mode) ->
       put(localTag, InitialTag),
       put(tagUpdFun, TagUpdFun),
 
-      lmetrics:set_time_series_callback(fun() -> ToBeAdded = memory(), {ok, ToBeAdded} end)
+      lmetrics:set_memory_callback(fun() -> ToBeAdded = memory(), {ok, ToBeAdded} end)
 
     end,
 

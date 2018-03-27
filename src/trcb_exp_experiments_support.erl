@@ -51,48 +51,61 @@ push_trcb_exp_metrics(StartTime) ->
 
 -spec push_lmetrics() -> ok.
 push_lmetrics() ->
-    TimeSeries = ?LMETRICS:get_time_series(),
+    lager:info("1"),
+    Memory = ?LMETRICS:get_memory(),
+    lager:info("2"),
     Latency = ?LMETRICS:get_latency(),
-    TransmissionTS = filter_by_ts_class(transmission, TimeSeries),
-    MemoryTS = filter_by_ts_class(memory, TimeSeries),
-    %% process transmission
-    PerMessageType = lists:foldl(
-        fun({Timestamp, transmission, {MessageType, Size}}, Acc0) ->
-            orddict:append(MessageType, {Timestamp, Size}, Acc0)
-        end,
-        orddict:new(),
-        TransmissionTS
-    ),
-    All0 = orddict:fold(
+    lager:info("3"),
+    Transmission = ?LMETRICS:get_transmission(),
+    lager:info("4"),
+    Transmission0 = dict:fold(
         fun(MessageType, Metrics, Acc0) ->
             lists:foldl(
                 fun({Timestamp, Size}, Acc1) ->
                     V = [{ts, Timestamp},
                          {size, [Size]}],
-                    orddict:append(MessageType, V, Acc1)
+                    L = orddict:fetch(MessageType, Acc1),
+                    orddict:store(MessageType, [V|L], Acc1)
                 end,
                 Acc0,
                 Metrics
             )
         end,
         orddict:new(),
-        PerMessageType
+        Transmission
     ),
+    lager:info("5"),
+
+    All0 = orddict:fold(
+        fun(MessageType, Metrics, Acc) ->
+            orddict:store(MessageType, lists:sort(Metrics), Acc)
+        end,
+        orddict:new(),
+        Transmission0
+    ),
+
+    lager:info("6"),
     %% process memory
     All1 = lists:foldl(
         fun({Timestamp, memory, {CRDTSize, RestSize}}, Acc0) ->
             V = [{ts, Timestamp},
                  {size, [CRDTSize, RestSize]}],
-            orddict:append(memory, V, Acc0)
+            L = orddict:fetch(memory, Acc0),
+            orddict:store(memory, [V|L], Acc0)
         end,
         All0,
-        MemoryTS
+        Memory
     ),
+    lager:info("7"),
     %% process latency
     All2 = orddict:store(latency, Latency, All1),
+    lager:info("8"),
     FilePath = file_path(node()),
+    lager:info("9"),
     File = encode(All2),
+    lager:info("10"),
     store(FilePath, File),
+    lager:info("11"),
     ok.
 
 -spec push_ping_data() -> ok.
@@ -106,15 +119,6 @@ push_ping_data() ->
 
     store(FilePath, File),
     ok.
-
-%% @private
-filter_by_ts_class(Class, TS) ->
-    lists:filter(
-        fun({_, MClass, _}) ->
-                MClass == Class
-        end,
-        TS
-    ).
 
 %% @private
 file_path(Name) ->
