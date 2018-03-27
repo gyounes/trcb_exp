@@ -64,8 +64,12 @@ push_lmetrics() ->
                 fun({Timestamp, Size}, Acc1) ->
                     V = [{ts, Timestamp},
                          {size, [Size]}],
-                    L = orddict:fetch(MessageType, Acc1),
-                    orddict:store(MessageType, [V|L], Acc1)
+                    case orddict:find(MessageType, Acc1) of
+                        {ok, L} ->
+                            orddict:store(MessageType, [V|L], Acc1);
+                        error ->
+                            orddict:store(MessageType, [V], Acc1)
+                    end
                 end,
                 Acc0,
                 Metrics
@@ -90,8 +94,12 @@ push_lmetrics() ->
         fun({Timestamp, memory, {CRDTSize, RestSize}}, Acc0) ->
             V = [{ts, Timestamp},
                  {size, [CRDTSize, RestSize]}],
-            L = orddict:fetch(memory, Acc0),
-            orddict:store(memory, [V|L], Acc0)
+            case orddict:find(memory, Acc0) of
+                {ok, L} ->
+                    orddict:store(memory, [V|L], Acc0);
+                error ->
+                    orddict:store(memory, [V], Acc0)
+            end
         end,
         All0,
         Memory
