@@ -51,20 +51,22 @@ push_trcb_exp_metrics(StartTime) ->
 
 -spec push_lmetrics() -> ok.
 push_lmetrics() ->
+
     Memory = ?LMETRICS:get_memory(),
     lager:info("Memory is ~p", [Memory]),
+
     Latency = ?LMETRICS:get_latency(),
     lager:info("Latency is ~p", [dict:to_list(Latency)]),
+
     Transmission = ?LMETRICS:get_transmission(),
     lager:info("Transmission to list is ~p", [dict:to_list(Transmission)]),
 
-
-    Transmission0 = dict:fold(
+    TransmissionDict = dict:fold(
         fun(MessageType, Metrics, Acc0) ->
             lists:foldl(
                 fun({Timestamp, Size}, Acc1) ->
                     V = [{ts, Timestamp},
-                         {size, [Size]}],
+                         {size, Size}],
                     case orddict:find(MessageType, Acc1) of
                         {ok, L} ->
                             orddict:store(MessageType, [V|L], Acc1);
@@ -73,22 +75,44 @@ push_lmetrics() ->
                     end
                 end,
                 Acc0,
-                Metrics
+                lists:reverse(Metrics)
             )
         end,
         orddict:new(),
         Transmission
     ),
 
-    All0 = orddict:fold(
-        fun(MessageType, Metrics, Acc) ->
-            orddict:store(MessageType, lists:sort(Metrics), Acc)
+    % All0 = orddict:fold(
+    %     fun(MessageType, Metrics, Acc) ->
+    %         orddict:store(MessageType, lists:sort(Metrics), Acc)
+    %     end,
+    %     orddict:new(),
+    %     Transmission0
+    % ),
+
+    %% process latency
+    LatencyDict = dict:fold(
+        fun(Type, Metrics, Acc0) ->
+            lists:foldl(
+                fun({Timestamp, Size}, Acc1) ->
+                    V = [{ts, Timestamp},
+                         {size, Size}],
+                    case orddict:find(Type, Acc1) of
+                        {ok, L} ->
+                            orddict:store(Type, [V|L], Acc1);
+                        error ->
+                            orddict:store(Type, [V], Acc1)
+                    end
+                end,
+                Acc0,
+                lists:reverse(Metrics)
+            )
         end,
         orddict:new(),
-        Transmission0
+        Latency
     ),
 
-    All1 = lists:foldl(
+    MemoryDict = lists:foldl(
         fun({Timestamp, {CRDTSize, RestSize}}, Acc0) ->
             V = [{ts, Timestamp},
                  {size, [CRDTSize, RestSize]}],
@@ -99,35 +123,21 @@ push_lmetrics() ->
                     orddict:store(memory, [V], Acc0)
             end
         end,
-        All0,
+        orddict:new(),
         Memory
     ),
 
-    %% process latency
-    All2 = dict:fold(
-        fun(Type, Metrics, Acc0) ->
-            lists:foldl(
-                fun({Timestamp, Size}, Acc1) ->
-                    V = [{ts, Timestamp},
-                         {size, [Size]}],
-                    case orddict:find(MessageType, Acc1) of
-                        {ok, L} ->
-                            orddict:store(MessageType, [V|L], Acc1);
-                        error ->
-                            orddict:store(MessageType, [V], Acc1)
-                    end
-                end,
-                Acc0,
-                Metrics
-            )
-        end,
-        All1,
-        Latency
-    ),
+    All0 = orddict:store(transmission, TransmissionDict, MemoryDict),
+    All = orddict:store(latency, LatencyDict, All0),
+
     FilePath = file_path(node()),
-    File = encode(All2),
+
+    File = encode(All),
+
     store(FilePath, File),
+
     lager:info("metrics pushed successfully"),
+
     ok.
 
 -spec push_ping_data() -> ok.
