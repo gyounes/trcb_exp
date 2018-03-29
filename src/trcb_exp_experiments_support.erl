@@ -104,7 +104,26 @@ push_lmetrics() ->
     ),
 
     %% process latency
-    All2 = orddict:store(latency, dict:to_list(Latency), All1),
+    All2 = dict:fold(
+        fun(Type, Metrics, Acc0) ->
+            lists:foldl(
+                fun({Timestamp, Size}, Acc1) ->
+                    V = [{ts, Timestamp},
+                         {size, [Size]}],
+                    case orddict:find(MessageType, Acc1) of
+                        {ok, L} ->
+                            orddict:store(MessageType, [V|L], Acc1);
+                        error ->
+                            orddict:store(MessageType, [V], Acc1)
+                    end
+                end,
+                Acc0,
+                Metrics
+            )
+        end,
+        All1,
+        Latency
+    ),
     FilePath = file_path(node()),
     File = encode(All2),
     store(FilePath, File),
