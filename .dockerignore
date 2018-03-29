@@ -1,9 +1,11 @@
 .git
 misc/*
-misc
+misc/
 .DS_Store
 .gitignore
 README.md
 LOCALKUBE.md
 LICENSE
 GCLOUD.md
+priv/
+priv/*
