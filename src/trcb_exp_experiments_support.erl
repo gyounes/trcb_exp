@@ -51,13 +51,14 @@ push_trcb_exp_metrics(StartTime) ->
 
 -spec push_lmetrics() -> ok.
 push_lmetrics() ->
-    lager:info("1"),
     Memory = ?LMETRICS:get_memory(),
-    lager:info("2"),
+    lager:info("Memory is ~p", [Memory]),
     Latency = ?LMETRICS:get_latency(),
-    lager:info("3"),
+    lager:info("Latency is ~p", [dict:to_list(Latency)]),
     Transmission = ?LMETRICS:get_transmission(),
-    lager:info("4"),
+    lager:info("Transmission to list is ~p", [dict:to_list(Transmission)]),
+
+
     Transmission0 = dict:fold(
         fun(MessageType, Metrics, Acc0) ->
             lists:foldl(
@@ -78,7 +79,6 @@ push_lmetrics() ->
         orddict:new(),
         Transmission
     ),
-    lager:info("5"),
 
     All0 = orddict:fold(
         fun(MessageType, Metrics, Acc) ->
@@ -88,10 +88,8 @@ push_lmetrics() ->
         Transmission0
     ),
 
-    lager:info("6"),
-    %% process memory
     All1 = lists:foldl(
-        fun({Timestamp, memory, {CRDTSize, RestSize}}, Acc0) ->
+        fun({Timestamp, {CRDTSize, RestSize}}, Acc0) ->
             V = [{ts, Timestamp},
                  {size, [CRDTSize, RestSize]}],
             case orddict:find(memory, Acc0) of
@@ -104,16 +102,13 @@ push_lmetrics() ->
         All0,
         Memory
     ),
-    lager:info("7"),
+
     %% process latency
-    All2 = orddict:store(latency, Latency, All1),
-    lager:info("8"),
+    All2 = orddict:store(latency, dict:to_list(Latency), All1),
     FilePath = file_path(node()),
-    lager:info("9"),
     File = encode(All2),
-    lager:info("10"),
     store(FilePath, File),
-    lager:info("11"),
+    lager:info("metrics pushed successfully"),
     ok.
 
 -spec push_ping_data() -> ok.
