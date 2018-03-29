@@ -6,7 +6,7 @@ main(_) ->
     Redis = redis_connection(),
 
     %% get all the redis keys
-    {ok, Keys} = eredis:q(Redis, ["KEYS", "*"]),
+    {ok, Keys} = eredis:q(Redis, ["KEYS", "*"], infinity),
 
     %% clear metrics dir
     os:cmd("rm -rf " ++ metrics_dir()),
@@ -14,7 +14,7 @@ main(_) ->
     lists:foreach(
         fun(Filename) ->
             %% for all the keys (files), save them in the metrics dir
-            {ok, File} = eredis:q(Redis, ["GET", Filename]),
+            {ok, File} = eredis:q(Redis, ["GET", Filename], infinity),
             save(Filename, File)
         end,
         Keys
