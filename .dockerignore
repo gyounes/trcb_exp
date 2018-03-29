@@ -1,0 +1,13 @@
+.git
+misc/*
+misc
+.DS_Store
+.gitignore
+README.md
+LOCALKUBE.md
+LICENSE
+GCLOUD.md
+Dockerfiles
+Dockerfiles/*
+log
+log/*
