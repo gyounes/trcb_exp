@@ -39,3 +39,4 @@ emu_scripts/nodes*
 k8s_scripts/nodesTable
 erl_crash.dump
 dump.rdb
+.dockerignore
