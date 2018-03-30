@@ -55,8 +55,8 @@ push_lmetrics() ->
     Memory = ?LMETRICS:get_memory(),
     lager:info("Memory is ~p", [Memory]),
 
-    Latency = ?LMETRICS:get_latency(),
-    lager:info("Latency is ~p", [dict:to_list(Latency)]),
+    Processing = ?LMETRICS:get_processing(),
+    lager:info("Processing is ~p", [dict:to_list(Processing)]),
 
     Transmission = ?LMETRICS:get_transmission(),
     lager:info("Transmission to list is ~p", [dict:to_list(Transmission)]),
@@ -90,8 +90,8 @@ push_lmetrics() ->
     %     Transmission0
     % ),
 
-    %% process latency
-    LatencyDict = dict:fold(
+    %% get processing
+    ProcessingDict = dict:fold(
         fun(Type, Metrics, Acc0) ->
             lists:foldl(
                 fun({Timestamp, Size}, Acc1) ->
@@ -109,7 +109,7 @@ push_lmetrics() ->
             )
         end,
         orddict:new(),
-        Latency
+        Processing
     ),
 
     MemoryDict = lists:foldl(
@@ -127,8 +127,9 @@ push_lmetrics() ->
         Memory
     ),
 
-    All0 = orddict:store(transmission, TransmissionDict, MemoryDict),
-    All = orddict:store(latency, LatencyDict, All0),
+    All0 = orddict:store(transmission, TransmissionDict, orddict:new()),
+    All1 = orddict:store(processing, ProcessingDict, All0),
+    All = orddict:store(memory, MemoryDict, All1),
 
     FilePath = file_path(node()),
 
