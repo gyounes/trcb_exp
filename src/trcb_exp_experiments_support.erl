@@ -53,7 +53,7 @@ push_trcb_exp_metrics(StartTime) ->
 push_lmetrics() ->
 
     Memory = ?LMETRICS:get_memory(),
-    lager:info("Memory is ~p", [Memory]),
+    lager:info("Memory is ~p", [dict:to_list(Memory)]),
 
     Processing = ?LMETRICS:get_processing(),
     lager:info("Processing is ~p", [dict:to_list(Processing)]),
@@ -61,12 +61,13 @@ push_lmetrics() ->
     Transmission = ?LMETRICS:get_transmission(),
     lager:info("Transmission to list is ~p", [dict:to_list(Transmission)]),
 
+    %% get transmission
     TransmissionDict = dict:fold(
         fun(MessageType, Metrics, Acc0) ->
             lists:foldl(
                 fun({Timestamp, Size}, Acc1) ->
                     V = [{ts, Timestamp},
-                         {size, Size}],
+                         {val, Size}],
                     case orddict:find(MessageType, Acc1) of
                         {ok, L} ->
                             orddict:store(MessageType, [V|L], Acc1);
@@ -82,21 +83,13 @@ push_lmetrics() ->
         Transmission
     ),
 
-    % All0 = orddict:fold(
-    %     fun(MessageType, Metrics, Acc) ->
-    %         orddict:store(MessageType, lists:sort(Metrics), Acc)
-    %     end,
-    %     orddict:new(),
-    %     Transmission0
-    % ),
-
     %% get processing
     ProcessingDict = dict:fold(
         fun(Type, Metrics, Acc0) ->
             lists:foldl(
-                fun({Timestamp, Size}, Acc1) ->
+                fun({Timestamp, Time}, Acc1) ->
                     V = [{ts, Timestamp},
-                         {size, Size}],
+                         {val, Time}],
                     case orddict:find(Type, Acc1) of
                         {ok, L} ->
                             orddict:store(Type, [V|L], Acc1);
@@ -112,16 +105,23 @@ push_lmetrics() ->
         Processing
     ),
 
-    MemoryDict = lists:foldl(
-        fun({Timestamp, {CRDTSize, RestSize}}, Acc0) ->
-            V = [{ts, Timestamp},
-                 {size, [CRDTSize, RestSize]}],
-            case orddict:find(memory, Acc0) of
-                {ok, L} ->
-                    orddict:store(memory, [V|L], Acc0);
-                error ->
-                    orddict:store(memory, [V], Acc0)
-            end
+    %% get memory
+    MemoryDict = dict:fold(
+        fun(Type, Metrics, Acc0) ->
+            lists:foldl(
+                fun({Timestamp, Size}, Acc1) ->
+                    V = [{ts, Timestamp},
+                         {val, Size}],
+                    case orddict:find(Type, Acc1) of
+                        {ok, L} ->
+                            orddict:store(Type, [V|L], Acc1);
+                        error ->
+                            orddict:store(Type, [V], Acc1)
+                    end
+                end,
+                Acc0,
+                lists:reverse(Metrics)
+            )
         end,
         orddict:new(),
         Memory
