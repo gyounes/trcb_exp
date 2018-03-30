@@ -56,7 +56,7 @@ create_spec(Funs) ->
 
 %% @private
 memory() ->
-  {0, trcb:tcbmemory()}.
+  trcb:tcbmemory().
 
 %% @private
 trcb_exp(Mode) ->
