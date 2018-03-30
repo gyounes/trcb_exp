@@ -44,20 +44,13 @@ fi
 #"${DIR}"/trcb_exp-dash-deploy.sh
 
 # trcb_exp configuration
-MODE_=(dots base)
-NODE_NUMBER_=(32)
-DEFAULT_EVENT_INTERVAL_=(5)
-# DEFAULT_MSG_NUMBER=50
-DROP_RATIO_=(0.00 0.01)
-NODE_EVENT_NUMBER=10000
-LATENCY_=(10)
-CPU=7
-
-# MODE_=(base dots ping)
-# NODE_NUMBER_=(5 10)
-# NODE_EVENT_NUMBER_=(100 1000)
-# DEFAULT_EVENT_INTERVAL_=(10 100)
-# LATENCY_=(0 20)
+# MODE_=(dots base)
+# NODE_NUMBER_=(4 8 16 32)
+# DEFAULT_EVENT_INTERVAL_=(5 10 20)
+# DEFAULT_MSG_NUMBER=$(( 4000 * 4 ))
+# DROP_RATIO_=(0.00 0.005)
+# #NODE_EVENT_NUMBER=1000
+# LATENCY_=(10)
 # CPU=7
 
 # shellcheck disable=SC2034
@@ -79,7 +72,7 @@ do
             MODE=${MODE} \
             NODE_NUMBER=${NODE_NUMBER} \
             DEFAULT_EVENT_INTERVAL=${DEFAULT_EVENT_INTERVAL} \
-            NODE_EVENT_NUMBER=${NODE_EVENT_NUMBER} \
+            NODE_EVENT_NUMBER=$(( ${DEFAULT_MSG_NUMBER} / ${NODE_NUMBER} )) \
             DROP_RATIO=${DROP_RATIO} \
             LATENCY=${LATENCY} \
             CPU=${CPU} "${DIR}"/k8s_exp-deploy.sh
@@ -91,6 +84,7 @@ do
 done
             # NODE_EVENT_NUMBER=${NODE_EVENT_NUMBER} \
             # NODE_EVENT_NUMBER=$((1000/${DEFAULT_EVENT_INTERVAL}*${DEFAULT_MSG_NUMBER})) \
+            # NODE_EVENT_NUMBER=$(( ${DEFAULT_MSG_NUMBER} / ${NODE_NUMBER} )) \
 
 #"${DIR}"/start-redis-sync.sh
 
