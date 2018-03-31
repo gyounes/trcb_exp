@@ -93,6 +93,16 @@ configure() ->
                   trcb_exp_latency,
                   ?DEFAULT_LATENCY),
 
+    %% configure interval of checking messages to be resent
+    configure_int("CHECK_RESEND_INTERVAL",
+                  trcb_exp_check_resend_interval,
+                  ?DEFAULT_CHECK_RESEND_INTERVAL),
+
+    %% configure interval for resending a message
+    configure_int("RESEND_INTERVAL",
+                  trcb_exp_resend_interval,
+                  ?DEFAULT_RESEND_INTERVAL),
+
     %% configure unique experiement timestamp
     configure_int("TIMESTAMP",
                   trcb_exp_timestamp,

@@ -96,6 +96,8 @@ run_test(Mode, NodeNumber, EventNumber, Latency, DropRatio) ->
                  {trcb_exp_mode, Mode},
                  {trcb_exp_drop_ratio, DropRatio},
                  {trcb_exp_latency, Latency},
+                 {trcb_exp_check_resend_interval, ?DEFAULT_CHECK_RESEND_INTERVAL},
+                 {trcb_exp_resend_interval, ?DEFAULT_RESEND_INTERVAL},
                  {trcb_exp_default_event_interval, ?EVENT_INTERVAL},
                  {trcb_exp_node_event_number, EventNumber}]}],
 

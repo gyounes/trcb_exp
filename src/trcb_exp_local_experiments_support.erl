@@ -77,6 +77,8 @@ start(Options) ->
         Mode = proplists:get_value(trcb_exp_mode, TRCBSettingsTemp),
         DropRatio = proplists:get_value(trcb_exp_drop_ratio, TRCBSettingsTemp),
         Latency = proplists:get_value(trcb_exp_latency, TRCBSettingsTemp),
+        CheckResendInterval = proplists:get_value(trcb_exp_check_resend_interval, TRCBSettingsTemp),
+        ResendInterval = proplists:get_value(trcb_exp_resend_interval, TRCBSettingsTemp),
 
         case Mode of
             ping ->
@@ -86,7 +88,9 @@ start(Options) ->
                 ok = rpc:call(Node, application, load, [trcb]),
                 ok = rpc:call(Node, trcb_config, set, [trcb_mode, Mode]),
                 ok = rpc:call(Node, trcb_config, set, [trcb_drop_ratio, DropRatio]),
-                ok = rpc:call(Node, trcb_config, set, [trcb_latency, Latency])
+                ok = rpc:call(Node, trcb_config, set, [trcb_latency, Latency]),
+                ok = rpc:call(Node, trcb_config, set, [trcb_check_resend_interval, CheckResendInterval]),
+                ok = rpc:call(Node, trcb_config, set, [trcb_resend_interval, ResendInterval])
         end,
 
         %% Load trcb_exp

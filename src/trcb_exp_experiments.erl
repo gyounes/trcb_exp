@@ -59,6 +59,16 @@ memory() ->
   trcb:tcbmemory().
 
 %% @private
+generate_number(N, L) ->
+    X = rand:uniform(N),
+    case lists:member(X, L) of
+        true ->
+            {X, lists:delete(X, L)};
+        false ->
+            generate_number(N, L)
+    end.
+
+%% @private
 trcb_exp(Mode) ->
     StartFun = fun() ->
 
@@ -76,6 +86,12 @@ trcb_exp(Mode) ->
       put(delivery, 0),
       put(localTag, InitialTag),
       put(tagUpdFun, TagUpdFun),
+      
+      N = trcb_config:get(trcb_exp_node_event_number), 
+      Drop = round(trcb_config:get(trcb_exp_drop_ratio) * N),
+      put(drop, Drop),
+      put(n, N),
+      put(l, lists:seq(1, N)),
 
       lmetrics:set_memory_callback(fun() -> ToBeAdded = memory(), {ok, ToBeAdded} end)
 
@@ -86,11 +102,31 @@ trcb_exp(Mode) ->
         LocalTag=get(localTag),
         NewTag = case Mode of
           dots ->
-            trcb:tcbcast(msg, LocalTag),
+
+            {X, L1} = generate_number(N, L),
+            case X > Drop of
+              true ->
+                trcb:tcbcast(msg, LocalTag);
+              false ->
+                trcb:tcbcast(msg, LocalTag, [{drop, true}])
+            end,
+
+            put(l, L1),
+
             TagUpdFun(local, LocalTag);
           base ->
             LocalTagNew = TagUpdFun(node(), LocalTag),
-            trcb:tcbcast(msg, LocalTagNew),
+
+            {X, L1} = generate_number(N, L),
+            case X > Drop of
+              true ->
+                trcb:tcbcast(msg, LocalTagNew);
+              false ->
+                trcb:tcbcast(msg, LocalTagNew, [{drop, true}])
+            end,
+
+            put(l, L1),
+
             LocalTagNew
         end,
         put(localTag, NewTag),

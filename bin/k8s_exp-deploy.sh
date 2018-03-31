@@ -9,6 +9,8 @@ ENV_VARS=(
   DEFAULT_EVENT_INTERVAL
   DROP_RATIO
   LATENCY
+  CHECK_RESEND_INTERVAL
+  RESEND_INTERVAL
   CPU
 )
 
@@ -29,6 +31,8 @@ echo "    NODE_EVENT_NUMBER: ${NODE_EVENT_NUMBER}"
 echo "    DEFAULT_EVENT_INTERVAL: ${DEFAULT_EVENT_INTERVAL}"
 echo "    DROP_RATIO: ${DROP_RATIO}"
 echo "    LATENCY: ${LATENCY}"
+echo "    CHECK_RESEND_INTERVAL: ${CHECK_RESEND_INTERVAL}"
+echo "    RESEND_INTERVAL: ${RESEND_INTERVAL}"
 echo "    CPU: ${CPU}"
 
 # ENV SETUP:
@@ -110,6 +114,10 @@ spec:
       value: "${DROP_RATIO}"
     - name: LATENCY
       value: "${LATENCY}"
+    - name: CHECK_RESEND_INTERVAL
+      value: "${CHECK_RESEND_INTERVAL}"
+    - name: RESEND_INTERVAL
+      value: "${RESEND_INTERVAL}"
     - name: SYNCHRONIZER
       value: "true"
 EOF
@@ -167,6 +175,10 @@ spec:
       value: "${DROP_RATIO}"
     - name: LATENCY
       value: "${LATENCY}"
+    - name: CHECK_RESEND_INTERVAL
+      value: "${CHECK_RESEND_INTERVAL}"
+    - name: RESEND_INTERVAL
+      value: "${RESEND_INTERVAL}"
     - name: SYNCHRONIZER
       value: "false"
 EOF

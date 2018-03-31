@@ -15,6 +15,8 @@
 -define(DEFAULT_OVERLAY, fullmesh).
 -define(DEFAULT_LATENCY, 0).
 -define(DEFAULT_DROP_RATIO, 0.00).
+-define(DEFAULT_CHECK_RESEND_INTERVAL, 100).
+-define(DEFAULT_RESEND_INTERVAL, 500).
 
 %% logging
 % -ifdef(debug).
