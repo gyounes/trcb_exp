@@ -103,7 +103,7 @@ trcb_exp(Mode) ->
         NewTag = case Mode of
           dots ->
 
-            {X, L1} = generate_number(get(N), get(l)),
+            {X, L1} = generate_number(get(n), get(l)),
             case X > get(drop) of
               true ->
                 trcb:tcbcast(msg, LocalTag);
@@ -117,7 +117,7 @@ trcb_exp(Mode) ->
           base ->
             LocalTagNew = TagUpdFun(node(), LocalTag),
 
-            {X, L1} = generate_number(get(N), get(l)),
+            {X, L1} = generate_number(get(n), get(l)),
             case X > get(drop) of
               true ->
                 trcb:tcbcast(msg, LocalTagNew);
