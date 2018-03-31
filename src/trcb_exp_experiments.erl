@@ -86,9 +86,9 @@ trcb_exp(Mode) ->
       put(delivery, 0),
       put(localTag, InitialTag),
       put(tagUpdFun, TagUpdFun),
-      
-      N = trcb_config:get(trcb_exp_node_event_number), 
-      Drop = round(trcb_config:get(trcb_exp_drop_ratio) * N),
+
+      N = trcb_exp_config:get(trcb_exp_node_event_number),
+      Drop = round(trcb_exp_config:get(trcb_exp_drop_ratio) * N),
       put(drop, Drop),
       put(n, N),
       put(l, lists:seq(1, N)),
