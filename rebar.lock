@@ -21,7 +21,7 @@
  {<<"time_compat">>,{pkg,<<"time_compat">>,<<"0.0.1">>},0},
  {<<"trcb">>,
   {git,"https://github.com/gyounes/trcb",
-       {ref,"8596f69eb3daded1e35e0d3f90b8d790994b7708"}},
+       {ref,"e46224871980208be66ad15e2712a161115b285c"}},
   0},
  {<<"types">>,
   {git,"https://github.com/lasp-lang/types",
