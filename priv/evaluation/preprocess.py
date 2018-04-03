@@ -7,7 +7,8 @@ METRIC_DIR = "metrics"
 PROCESSED_DIR = "processed"
 CONFIG_FILE = "synchronizer.json"
 TS="ts"
-SIZE="size"
+VAL="val"
+TIME_UNIT = "ms"
 
 def ls(dir):
     """
@@ -91,63 +92,70 @@ def group_by_config(d):
             # read metric file
             j = read_json(file)
 
-            # for all time-series types (all but latency)
+            # for all time-series types
             # for all metrics remove start_time
-
-            for type in j:
-
-                # if type != "latency":
-                if not type in ["latency", "tcbcast", "tcbcast_ack"]:
-                    for m in j[type]:
-                        m[TS] -= start_time
+            for type, typev in j.iteritems():
 
                 # create empty list if type not already in dictionary
                 if not type in r[k]:
-                    r[k][type] = []
+                    r[k][type] = {}
 
-                # store metrics by type
-                r[k][type].append(j[type])
+                for subtype, subtypev in typev.iteritems():
+                    for entry in subtypev:
+                        entry[TS] -= start_time
+
+                    # create empty list if type not already in dictionary
+                    if not subtype in r[k][type]:
+                        r[k][type][subtype] = []
+
+                    # store metrics by type
+                    r[k][type][subtype].append(j[type][subtype])
 
     return r
 
-def get_higher_ts(runs):
+def get_highest_ts(entries):
     """
-    Find the higher timestamp of all runs.
+    Find the higher timestamp of all entries.
     """
-    higher = 0
-    for run in runs:
-        for metric in run:
-            higher = max(higher, metric[TS])
+    highest = 0
+    for list in entries:
+        for entry in list:
+            highest = max(highest, entry[TS])
+    return highest
 
-    return higher
-
-def bottom_size(type):
+def bottom_val(type):
     """
-    Return bottom size depending on the type passed as input.
+    Return bottom val depending on the type passed as input.
     """
-    one = ["tcbcast", "tcbcast_ack"]
+    one = ["transmission"]
     two = ["memory"]
+    three = ["processing"]
 
     if type in one:
-        return [0]
+        return 0
     if type in two:
-        return [0, 0]
+        return 0
+    if type in three:
+        return 0
 
     print("type not found. Exiting.")
     exit()
 
-def add(type, sizeA, sizeB):
+def add(type, valA, valB):
     """
-    Sum two sizes
+    Sum two vals
     """
 
-    one = ["tcbcast", "tcbcast_ack"]
+    one = ["transmission"]
     two = ["memory"]
+    three = ["processing"]
 
     if type in one:
-        return [sizeA[0] + sizeB[0]]
+        return valA + valB
     if type in two:
-        return [sizeA[0] + sizeB[0], sizeA[1] + sizeB[1]]
+        return valA + valB
+    if type in three:
+        return valA + valB
 
     print("type not found. Exiting.")
     exit()
@@ -157,14 +165,18 @@ def default(type, previous):
     Default value given a type:
     - if transmission, 0
     - if memory, previous value
+    - if processing, 0
     """
-    one = ["tcbcast", "tcbcast_ack"]
+    one = ["transmission"]
     two = ["memory"]
+    three = ["processing"]
 
     if type in one:
-        return [0]
+        return 0
     if type in two:
         return previous
+    if type in three:
+        return 0
 
     print("type not found. Exiting.")
     exit()
@@ -173,68 +185,73 @@ def ignore_pre_big_bang(run):
     """
     Remove metrics before timestamp 0.
     """
-    
-    return [m for m in run if m[TS] >= 0]
 
+    return [entry for entry in run if entry[TS] >= 0]
 
 def assume_unknown_values(d):
     """
     Assume values for timestamps not reported for transmission graphs.
     """
 
+    # for each key: configuration
     for key in d:
 
         # get all time-series types
         types = d[key].keys()
-        types.remove("latency")
-        types.remove("tcbcast")
-        types.remove("tcbcast_ack")
 
+        # type is one of: processing transmission memory
         for type in types:
 
-            # find the higher timestamp of all runs for this type
-            higher_ts = get_higher_ts(d[key][type])
+            subtypes = d[key][type].keys()
+            
+            for subtype in subtypes:
 
-            runs = []
+                # find the highest timestamp of all runs for this type
+                highest_ts = get_highest_ts(d[key][type][subtype])
 
-            for run in d[key][type]:
+                runs = []
 
-                # remove timestamps before 0
-                run = ignore_pre_big_bang(run)
+                for run in d[key][type][subtype]:
 
-                # get bottom size
-                bs = bottom_size(type)
+                    # remove timestamps before 0
+                    run = ignore_pre_big_bang(run)
 
-                # since we can have several metrics
-                # for the same timestamp,
-                # aggregate metrics per timestamp
-                ts_to_size = {}
+                    # get bottom val
+                    bs = bottom_val(type)
 
-                for metric in run:
-                    ts = metric[TS]
-                    size = metric[SIZE]
+                    # since we can have several metrics
+                    # for the same timestamp,
+                    # aggregate metrics per timestamp
+                    ts_to_val = {}
+
+                    for metric in run:
+                        ts = metric[TS]
+                        val = metric[VAL]
 
                     # if ts not in map
                     # create an entry
-                    if not ts in ts_to_size:
-                        ts_to_size[ts] = bs
+                    if not ts in ts_to_val:
+                        ts_to_val[ts] = bs
 
-                    ts_to_size[ts] = add(type, ts_to_size[ts], size)
+                    if type in ["transmission"]:
+                        ts_to_val[ts] = add(type, ts_to_val[ts], val)
+                    else:
+                        ts_to_val[ts] = add(type, ts_to_val[ts], val)
 
-                previous = bs
+                    previous = bs
+                    
+                    # create bottom values for unknown timestamps
+                    for ts in range(0, highest_ts):
+                        if not ts in ts_to_val:
+                            ts_to_val[ts] = default(type, previous)
 
-                # create bottom values for unknown timestamps
-                for ts in range(0, higher_ts):
-                    if not ts in ts_to_size:
-                        ts_to_size[ts] = default(type, previous)
+                        previous = ts_to_val[ts]
 
-                    previous = ts_to_size[ts]
+                    # store the ts_to_val map
+                    runs.append(ts_to_val)
 
-                # store the ts_to_size map
-                runs.append(ts_to_size)
-
-            # update all runs
-            d[key][type] = runs
+                # update all runs
+                d[key][type][subtype] = runs
 
     return d
 
@@ -259,42 +276,39 @@ def average(d):
 
         # get all time-series types
         types = d[key].keys()
-        types.remove("latency")
-        types.remove("tcbcast_ack")
-        types.remove("tcbcast")
         
         for type in types:
-            # number of runs
-            runs_number = len(d[key][type])
-            # number of metrics
-            metrics_number = len(d[key][type][0]) - 1
 
-            # get bottom size
-            bs = bottom_size(type)
+            subtypes = d[key][type].keys()
+            
+            for subtype in subtypes:
 
-            # list where we'll store the sum of the sizes
-            sum = [bs for i in range(0, metrics_number)]
+                # number of runs
+                runs_number = len(d[key][type][subtype])
 
-            # sum all runs
-            for run in d[key][type]:
-                for i in range(0, metrics_number):
+                # get bottom val
+                sum = bottom_val(type)
+
+                # sum all runs
+                for run in d[key][type][subtype]:
+                    # print(run)
                     ls = [
-                        sum[i],
-                        run[i]
+                        sum,
+                        run
                     ]
-                    sum[i] = sum_lists(ls)
+                    sum = sum_lists(ls)
 
-            # avg of sum
-            avg = [divide_list_by(ls, runs_number) for ls in sum]
+                # avg of sum
+                avg = [divide_list_by(ls, runs_number) for ls in sum]
 
-            # store avg
-            d[key][type] = avg
+                # store avg
+                d[key][type][subtype] = avg
 
     return d
 
 def to_ms(microseconds):
     """
-    Convertes microseconds to milliseconds.
+    Converts microseconds to milliseconds.
     """
     return microseconds / float(1000)
 
@@ -314,12 +328,12 @@ def aggregate(d):
         # for type in d[key]:
         #     if type in ["tcbcast", "tcbcast_ack"]:
         #         # make list of lists into list
-        #         ls = [e["size"] for l in d[key][type] for e in l]
+        #         ls = [e["val"] for l in d[key][type] for e in l]
         #         to_sum.append(ls)
 
         #r[key]["transmission"] = sum_lists(to_sum)
-        r[key]["tcbcast"] = [e["size"] for l in d[key]["tcbcast"] for e in l]
-        r[key]["tcbcast_ack"] = [e["size"] for l in d[key]["tcbcast_ack"] for e in l]
+        r[key]["tcbcast"] = [e["val"] for l in d[key]["tcbcast"] for e in l]
+        r[key]["tcbcast_ack"] = [e["val"] for l in d[key]["tcbcast_ack"] for e in l]
         r[key]["memory_crdt"] = []
         r[key]["memory_algorithm"] = []
         r[key]["latency_local"] = []
@@ -392,7 +406,9 @@ def main():
     Main.
     """
     d = get_metric_files()
+    # print(d)
     d = group_by_config(d)
+    print(d)
     d = assume_unknown_values(d)
     d = average(d)
     d = aggregate(d)
