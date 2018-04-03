@@ -287,11 +287,10 @@ def average(d):
                 runs_number = len(d[key][type][subtype])
 
                 # get bottom val
-                sum = bottom_val(type)
+                sum = [bottom_val(type)]
 
                 # sum all runs
                 for run in d[key][type][subtype]:
-                    # print(run)
                     ls = [
                         sum,
                         run
@@ -299,7 +298,7 @@ def average(d):
                     sum = sum_lists(ls)
 
                 # avg of sum
-                avg = [divide_list_by(ls, runs_number) for ls in sum]
+                avg = [s / runs_number for s in sum]
 
                 # store avg
                 d[key][type][subtype] = avg
@@ -323,6 +322,11 @@ def aggregate(d):
         # create key in dictionary
         r[key] = {}
 
+        # init
+        for type in d[key]:
+            for subtype in d[key][type]:
+                r[key][subtype] = [l for l in d[key][type][subtype]]
+
         # sum all lists that have these types
         # to_sum = []
         # for type in d[key]:
@@ -332,26 +336,25 @@ def aggregate(d):
         #         to_sum.append(ls)
 
         #r[key]["transmission"] = sum_lists(to_sum)
-        r[key]["tcbcast"] = [e["val"] for l in d[key]["tcbcast"] for e in l]
-        r[key]["tcbcast_ack"] = [e["val"] for l in d[key]["tcbcast_ack"] for e in l]
-        r[key]["memory_crdt"] = []
-        r[key]["memory_algorithm"] = []
-        r[key]["latency_local"] = []
-        r[key]["latency_remote"] = []
+        # r[key]["tcbcast"] = [e["val"] for l in d[key]["tcbcast"] for e in l]
+        # r[key]["tcbcast_ack"] = [e["val"] for l in d[key]["tcbcast_ack"] for e in l]
+        # r[key]["memory_crdt"] = []
+        # r[key]["memory_algorithm"] = []
+        # r[key]["latency_send"] = []
+        # r[key]["latency_deliver"] = []
 
-        # aggregate memory values
-        for [C, R] in d[key]["memory"]:
-            r[key]["memory_crdt"].append(C)
-            r[key]["memory_algorithm"].append(R)
-
+        # # aggregate memory values
+        # for [C, R] in d[key]["memory"]:
+        #     r[key]["memory_crdt"].append(C)
+        #     r[key]["memory_algorithm"].append(R)
         
-        # aggregate latency values
-        for lord in d[key]["latency"]: # local or remote dict
-            for lort in lord: # local or remote type
-                k = "latency_" + lort
-                latency_values = lord[lort]
-                # latency_values = map(to_ms, lord[lort])
-                r[key][k].extend(latency_values)
+        # # aggregate latency values
+        # for lord in d[key]["processing"]: # local or remote dict
+        #     for lort in lord: # local or remote type
+        #         k = "processing_" + lort
+        #         latency_values = lord[lort]
+        #         # latency_values = map(to_ms, lord[lort])
+        #         r[key][k].extend(latency_values)
 
     return r
 
@@ -406,9 +409,7 @@ def main():
     Main.
     """
     d = get_metric_files()
-    # print(d)
     d = group_by_config(d)
-    print(d)
     d = assume_unknown_values(d)
     d = average(d)
     d = aggregate(d)
