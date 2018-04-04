@@ -5,7 +5,7 @@ main <- function() {
   ylabel <- "Transmission (words)"
   xlabel <- "Time (ms)"
   logy <- FALSE
-  logx <- TRUE
+  logx <- FALSE
   # key2 <- "tcbcast_ack"
   key1 <- "tcbcast"
 

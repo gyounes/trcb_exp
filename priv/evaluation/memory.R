@@ -9,7 +9,7 @@ main <- function() {
   ylabel <- "Memory (words)"
   xlabel <- "Time (s)"
   logy <- FALSE
-  logx <- TRUE
+  logx <- FALSE
 
   # list of simulations
   simulations <- list.files(metrics_dir)
@@ -24,7 +24,7 @@ main <- function() {
     #    splot(dir, simulation, key, output_file, ylabel, logx)
 
     # memory algorithm
-    key <- "memory_algorithm"
+    key <- "algorithm"
     output_file <- paste(simulation, "_", key, ".png", sep="")
     # splot(dir, simulation, key, output_file, ylabel, logx)
     splot(dir, simulation, key, output_file, ylabel, xlabel, logy)
