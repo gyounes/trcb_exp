@@ -228,15 +228,15 @@ def assume_unknown_values(d):
                         ts = metric[TS]
                         val = metric[VAL]
 
-                    # if ts not in map
-                    # create an entry
-                    if not ts in ts_to_val:
-                        ts_to_val[ts] = bs
-
-                    if type in ["transmission"]:
-                        ts_to_val[ts] = add(type, ts_to_val[ts], val)
-                    else:
-                        ts_to_val[ts] = add(type, ts_to_val[ts], val)
+                        # if ts not in map
+                        # create an entry
+                        if not ts in ts_to_val:
+                            ts_to_val[ts] = bs
+                        else:
+                            if type in ["transmission"]:
+                                ts_to_val[ts] = add(type, ts_to_val[ts], val)
+                            else:
+                                ts_to_val[ts] = add(type, ts_to_val[ts], val)
 
                     previous = bs
                     
@@ -273,32 +273,48 @@ def average(d):
     """
 
     for key in d:
+        print("key is %s" % key)
 
         # get all time-series types
         types = d[key].keys()
         
         for type in types:
 
+            print("type is %s" % type)
+
             subtypes = d[key][type].keys()
             
             for subtype in subtypes:
 
+                print("subtype is %s" % subtype)
+
                 # number of runs
                 runs_number = len(d[key][type][subtype])
 
-                # get bottom val
-                sum = [bottom_val(type)]
+                # number of metrics
+                metrics_number = len(d[key][type][subtype][0]) - 1
+
+                print("metrics_number is %s" % metrics_number)
+
+                # get bottom size
+                bs = bottom_val(type)
+
+                print("runs number is %s" % runs_number)
+
+                # list where we'll store the sum of the vals
+                sum = [bs for i in range(0, metrics_number)]
 
                 # sum all runs
                 for run in d[key][type][subtype]:
-                    ls = [
-                        sum,
-                        run
-                    ]
-                    sum = sum_lists(ls)
+
+                    for i in range(0, metrics_number):
+                        sum[i] += run[i]
 
                 # avg of sum
-                avg = [s / runs_number for s in sum]
+                # avg = [s / runs_number for s in sum]
+                avg = [entry/runs_number for entry in sum]
+
+                print("avg is %s" % avg)
 
                 # store avg
                 d[key][type][subtype] = avg
@@ -412,6 +428,7 @@ def main():
     d = group_by_config(d)
     d = assume_unknown_values(d)
     d = average(d)
+    # print(d)
     d = aggregate(d)
     d = group_by_simulation(d)
     dump(d)
